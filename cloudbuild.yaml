@@ -1,0 +1,5 @@
+steps:
+  - name: "gcr.io/cloud-builders/npm"
+    args: ["run", "install:functions"]
+  - name: "gcr.io/cloud-builders/npm"
+    args: ["test"]

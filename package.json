@@ -1,0 +1,22 @@
+{
+  "name": "cron-life",
+  "version": "1.0.0",
+  "description": "Different cron jobs for life",
+  "scripts": {
+    "test": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ajorquera/cronLife.git"
+  },
+  "author": "Andres Jorquera <jorquera.ad@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ajorquera/cronLife/issues"
+  },
+  "homepage": "https://github.com/ajorquera/cronLife#readme",
+  "devDependencies": {
+    "eslint": "^6.1.0",
+    "eslint-config-airbnb-base": "^13.2.0"
+  }
+}

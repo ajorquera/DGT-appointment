@@ -1,0 +1,17 @@
+{
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "engines": {
+    "node": "8"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
+    "jest": "^24.8.0",
+    "module-alias": "^2.2.0"
+  },
+  "_moduleAliases": {
+  
+  }
+}
