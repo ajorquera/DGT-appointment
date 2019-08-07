@@ -1,3 +1,1 @@
-import checkAppointment = require('./checkAppointment');
-
-exports.module.checkAppointment = checkAppointment;
+exports.checkAppointment = require('./checkAppointment');

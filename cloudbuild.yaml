@@ -1,5 +1,10 @@
 steps:
-  - name: "gcr.io/cloud-builders/npm"
-    args: ["run", "install:functions"]
-  - name: "gcr.io/cloud-builders/npm"
-    args: ["test"]
+- name: 'gcr.io/cloud-builders/npm'
+  args: ['install']
+  dir: 'functions/checkAppointment'
+- name: 'gcr.io/cloud-builders/npm'
+  args: ['test']
+  dir: 'functions/checkAppointment'
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: ['functions', 'deploy', 'checkAppointment', '--trigger-http', '--runtime', 'nodejs10']
+  dir: 'functions/checkAppointment'

@@ -1,35 +1,56 @@
-const axios = require('axios');
-const cherio = require('cheerio');
+const axios     = require('axios');
+const cheerio   = require('cheerio');
+var querystring = require("querystring");
 
-const URL = 'https://sedeapl.dgt.gob.es:7443/WEB_NCIT_CONSULTA/solicitarCita.faces'
+const URL = 'https://sedeapl.dgt.gob.es:7443/WEB_NCIT_CONSULTA/solicitarCita.faces';
 
 const requestInstance = axios.create({
-    timeout: 1000,
+    timeout: 10000,
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 });
 
-module.exports = await (appointment) => {
+module.exports = async (appointment) => {
     for (let stepIndex = 0; stepIndex < steps.length; stepIndex++) {
-        if(step.method == 'post' && !viewStateStr) {
-            return handleError();
-        }
-
         const step = steps[stepIndex];
-        
-        await requestInstance([step.method], step.data).then(requestCB).catch(handleError);
+
+        let data;
+        if(step.method == 'post') {
+            data = setFormData(step.data);
+        }
+        const {html, body} = await requestInstance[step.method](URL, data).then(requestCB).catch(handleError);
+
+        if(stepIndex + 1 === steps.length) {
+
+            let isAppointmentAvailable;
+
+            if(html) {
+                isAppointmentAvailable = !html.find('.msgError').length
+            }
+
+            return {
+                isAppointmentAvailable,
+                body
+            };
+        }
     }
 }
 
 let viewStateStr;
 
-const requestCB = () => {
-    const html = cherio.load(res.data);
+const requestCB = (res) => {
+    const html = cheerio(res.data);
     viewStateStr = html.find('input[name="javax.faces.ViewState"]').attr('value');
+    return {html, body: res.data};
 };
 
 const handleError = (err) => {
-    
+    return {}
 }
+
+const setFormData = (data) => {
+    data['javax.faces.ViewState'] = viewStateStr;
+    return querystring.stringify(data)
+};
 
 const steps = [
     {method: 'get'},
@@ -48,6 +69,7 @@ const steps = [
         'publicacionesForm:oficina': '40',
         'publicacionesForm:tipoTramite': '3',
         'publicacionesForm:pais': '21',
-        'publicacionesForm:j_id70': 'continuar'
+        'publicacionesForm:j_id70': 'continuar',
+        'honeypotName': ''
     }},
 ]

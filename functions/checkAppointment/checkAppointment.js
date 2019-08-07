@@ -1,14 +1,15 @@
 
-const METHOD_NOT_ALLOWED = 405;
+const checkAvailableAppointment = require('./checkAvailableAppointment');
+const sendNotitification        = require('./sendNotification');
+const EMAIL_TO = process.env.EMAIL_TO;
+
 
 module.exports = async (req, res) => {
-    if(req.method !== 'POST') {
-        return res.status(METHOD_NOT_ALLOWED);
-    }
-
-    const isAppointmentAvailable = await checkAvailableAppointment(appointment.appointment);
+    const {isAppointmentAvailable, body} = await checkAvailableAppointment();
 
     if(isAppointmentAvailable) {
-        await sendNotitificationEmail({email: appointment.notificationEmail});
+        sendNotitification({email: EMAIL_TO});
     }
+    
+    res.send(body);
 }

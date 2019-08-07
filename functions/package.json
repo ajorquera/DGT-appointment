@@ -7,11 +7,17 @@
     "node": "8"
   },
   "dependencies": {
+    "axios": "^0.19.0",
     "cheerio": "^1.0.0-rc.3",
-    "jest": "^24.8.0",
+    "dotenv": "^8.0.0",
+    "express": "^4.17.1",
+    "handlebars": "^4.1.2",
+    "mailgun-js": "^0.22.0",
     "module-alias": "^2.2.0"
   },
-  "_moduleAliases": {
-  
+  "_moduleAliases": {},
+  "devDependencies": {
+    "jest": "^24.8.0",
+    "nodemon": "^1.19.1"
   }
 }
