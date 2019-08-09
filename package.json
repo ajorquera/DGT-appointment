@@ -19,5 +19,8 @@
   "devDependencies": {
     "eslint": "^6.1.0",
     "eslint-config-airbnb-base": "^13.2.0"
+  },
+  "dependencies": {
+    "fake-useragent": "^1.0.1"
   }
 }

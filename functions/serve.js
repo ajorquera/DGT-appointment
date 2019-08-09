@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const checkAppointment = require('./checkAppointment');
+const checkAppointment = require('./licenceAppointments');
 
 const bodyParser = require('body-parser');
 

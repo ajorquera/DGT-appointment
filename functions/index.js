@@ -1,1 +1,1 @@
-exports.checkAppointment = require('./checkAppointment');
+exports.licenceAppointments = require('./licenceAppointments');

@@ -1,6 +1,7 @@
 const axios     = require('axios');
 const cheerio   = require('cheerio');
 var querystring = require("querystring");
+const fakeUserAgent = require('fake-useragent');
 
 const URL = 'https://sedeapl.dgt.gob.es:7443/WEB_NCIT_CONSULTA/solicitarCita.faces';
 
@@ -10,15 +11,26 @@ const requestInstance = axios.create({
 });
 
 module.exports = async (office) => {
+    const headers = {
+        'User-Agent': fakeUserAgent()
+    };
+
     for (let stepIndex = 0; stepIndex < steps.length; stepIndex++) {
         const step = steps[stepIndex];
+        
 
         let data;
         if(step.method == 'post') {
             step.data['publicacionesForm:oficina'] = office.code;
             data = setFormData(step.data);
-        }
-        const {html, body} = await requestInstance[step.method](URL, data).then(requestCB).catch(handleError);
+        };
+        
+        const {html, body} = await requestInstance.request({
+            method: step.method, 
+            url: URL, 
+            data, 
+            headers
+        }).then(requestCB).catch(handleError);
 
         if(stepIndex + 1 === steps.length) {
 
