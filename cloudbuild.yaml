@@ -6,5 +6,5 @@ steps:
   args: ['test']
   dir: 'functions/licenceAppointments'
 - name: 'gcr.io/cloud-builders/gcloud'
-  args: ['functions', 'deploy', 'licenceAppointments', '--trigger-http', '--runtime', 'nodejs10']
+  args: ['functions', 'deploy', 'licenceAppointments', '--trigger-http', '--runtime=nodejs8', '--timeout=540000']
   dir: 'functions/licenceAppointments'
