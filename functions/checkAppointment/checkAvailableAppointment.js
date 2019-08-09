@@ -9,12 +9,13 @@ const requestInstance = axios.create({
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 });
 
-module.exports = async (appointment) => {
+module.exports = async (office) => {
     for (let stepIndex = 0; stepIndex < steps.length; stepIndex++) {
         const step = steps[stepIndex];
 
         let data;
         if(step.method == 'post') {
+            step.data['publicacionesForm:oficina'] = office.code;
             data = setFormData(step.data);
         }
         const {html, body} = await requestInstance[step.method](URL, data).then(requestCB).catch(handleError);
@@ -57,16 +58,16 @@ const steps = [
     {method: 'post', data: {
         'publicacionesForm': 'publicacionesForm',
         'publicacionesForm:tipoTramiteinicializado': '-1',
-        'publicacionesForm:oficina': '40'
+        'publicacionesForm:oficina': '1'
     }},
     {method: 'post', data: {
         'publicacionesForm': 'publicacionesForm',
-        'publicacionesForm:oficina': '40',
+        'publicacionesForm:oficina': '1',
         'publicacionesForm:tipoTramite': '3'
     }},
     {method: 'post', data: {
         'publicacionesForm': 'publicacionesForm',
-        'publicacionesForm:oficina': '40',
+        'publicacionesForm:oficina': '1',
         'publicacionesForm:tipoTramite': '3',
         'publicacionesForm:pais': '21',
         'publicacionesForm:j_id70': 'continuar',

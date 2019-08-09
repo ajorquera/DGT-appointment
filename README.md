@@ -9,6 +9,8 @@ All of this for $0.
 
 The cron job just checks every 2-3 hours if there is an appointment available. Once it has a slot, it will send me an email. 
 
+You can also check in which offices there are appointments available
+
 ```
                                 ____
                               /      \

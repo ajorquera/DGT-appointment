@@ -1,15 +1,24 @@
 
 const checkAvailableAppointment = require('./checkAvailableAppointment');
 const sendNotitification        = require('./sendNotification');
-const EMAIL_TO = process.env.EMAIL_TO;
+const offices                   = require('./offices');
+const EMAIL_TO                  = process.env.EMAIL_TO;
 
 
 module.exports = async (req, res) => {
-    const {isAppointmentAvailable, body} = await checkAvailableAppointment();
+    const officesAvailable = [];
 
-    if(isAppointmentAvailable) {
-        sendNotitification({email: EMAIL_TO});
+    for (let i = 0; i < offices.length; i++) {
+        const office = offices[i];
+        
+        const {isAppointmentAvailable, body} = await checkAvailableAppointment(office);
+    
+        if(isAppointmentAvailable) {
+            officesAvailable.push(office);
+        }
     }
     
-    res.send(body);
+    sendNotitification({email: EMAIL_TO, offices: officesAvailable});
+    
+    res.send(officesAvailable);
 }
