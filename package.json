@@ -1,6 +1,6 @@
 {
   "name": "cron-life",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Different cron jobs for life",
   "scripts": {
     "test": "",
@@ -19,5 +19,8 @@
   "devDependencies": {
     "eslint": "^6.1.0",
     "eslint-config-airbnb-base": "^13.2.0"
+  },
+  "dependencies": {
+    "fake-useragent": "^1.0.1"
   }
 }

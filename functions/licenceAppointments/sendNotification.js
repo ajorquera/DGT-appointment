@@ -9,6 +9,7 @@ const emailTemplate = Handlebars.compile(emailStr);
 
 const MAILGUN_API_KEY    = process.env.MAILGUN_API_KEY;
 const MAILGUN_DOMAIN = process.env.MAILGUN_DOMAIN;
+const NOTIFY = !!process.env.NOTIFY;
 
 const FROM       = 'scrappy@andresjorquera.com';
 const SUBJECT    = 'Citas Disponibles';
@@ -23,15 +24,24 @@ const defaultData = {
     //'h:Reply-To': REPLY_TO
 };
 
-const mailgun = new Mailgun({apiKey: MAILGUN_API_KEY, domain: MAILGUN_DOMAIN, host: 'api.eu.mailgun.net'});
+const mailgun = new Mailgun({
+    apiKey: MAILGUN_API_KEY, 
+    domain: MAILGUN_DOMAIN, 
+    host: 'api.eu.mailgun.net'
+});
 
-module.exports = async ({email}) => {
+module.exports = async ({email, offices}) => {
+    if(!NOTIFY) {
+        return {NOTIFY};
+    }
+
     const data = {...defaultData };
 
     data.html = emailTemplate({
         title: SUBJECT,
         domain: DOMAIN,
-        action_url: ACTION_URL
+        action_url: ACTION_URL,
+        offices
     });
 
     data.to = email;
