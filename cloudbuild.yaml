@@ -1,10 +1,10 @@
 steps:
 - name: 'gcr.io/cloud-builders/npm'
   args: ['install']
-  dir: 'functions/licenceAppointments'
+  dir: 'functions'
 - name: 'gcr.io/cloud-builders/npm'
   args: ['test']
-  dir: 'functions/licenceAppointments'
+  dir: 'functions'
 - name: 'gcr.io/cloud-builders/gcloud'
   args: [
     'functions', 
@@ -15,4 +15,4 @@ steps:
     '--timeout=540s',
     '--set-env-vars', 'EMAIL_TO=${_EMAIL_TO}, MAILGUN_API_KEY=${_MAILGUN_API_KEY}, MAILGUN_DOMAIN=${_MAILGUN_DOMAIN}, NOTIFY=${_NOTIFY}'
   ]
-  dir: 'functions/licenceAppointments'
+  dir: 'functions'
