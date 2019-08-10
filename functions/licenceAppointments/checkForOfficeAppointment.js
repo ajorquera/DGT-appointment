@@ -17,8 +17,10 @@ module.exports = async (req, res) => {
         return res.status(404).end();
     }
 
-    const {isAppointmentAvailable, body} = await checkAvailableAppointment(office);
+    const {isAppointmentAvailable, body, datesAvailable} = await checkAvailableAppointment(office);
     
+    office.datesAvailable = datesAvailable;
+
     if(isAppointmentAvailable) {
         await sendNotitification({email: EMAIL_TO, offices: [office]});
     }

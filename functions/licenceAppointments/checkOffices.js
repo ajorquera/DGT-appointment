@@ -11,14 +11,18 @@ module.exports = async (req, res) => {
     for (let i = 0; i < offices.length; i++) {
         const office = offices[i];
         
-        const {isAppointmentAvailable, body} = await checkAvailableAppointment(office);
+        const {isAppointmentAvailable, body, datesAvailable} = await checkAvailableAppointment(office);
     
         if(isAppointmentAvailable) {
+            office.datesAvailable = datesAvailable;
             officesAvailable.push(office);
         }
     }
-    
-    sendNotitification({email: EMAIL_TO, offices: officesAvailable});
+    try {
+        await sendNotitification({email: EMAIL_TO, offices: officesAvailable});
+    } catch(e) {
+        console.log(e)
+    }
     
     res.send(officesAvailable);
 }
