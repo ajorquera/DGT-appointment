@@ -28,10 +28,12 @@ module.exports = async (req, res) => {
         }
     }
 
-    try {
-        await sendNotitification({email, offices: officesAvailable, notification});
-    } catch(e) {
-        console.log(e)
+    if(officesAvailable.length) {
+        try {
+            await sendNotitification({email, offices: officesAvailable, notification});
+        } catch(e) {
+            console.log(e)
+        }
     }
     
     res.send(officesAvailable);

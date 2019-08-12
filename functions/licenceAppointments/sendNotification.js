@@ -3,7 +3,9 @@ const Handlebars        = require('handlebars');
 const fs                = require('fs');
 const path              = require('path');
 const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL;
-const slack             = require('slack-notify')(SLACK_WEBHOOK_URL);
+
+const slackNotify       = require('slack-notify');
+const slack             = slackNotify(SLACK_WEBHOOK_URL);
 
 const emailStr          = fs.readFileSync(path.resolve(__dirname, '../templates/appointmentNotification.hbs'), 'utf8');
 
