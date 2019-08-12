@@ -1,12 +1,21 @@
 
 const checkAvailableAppointment = require('./checkAvailableAppointment');
 const sendNotitification        = require('./sendNotification');
-const offices                   = require('./offices');
-const EMAIL_TO                  = process.env.EMAIL_TO;
-
+const allOffices                = require('./offices');
+const {setOfficeName}           = require('./utils');
 
 module.exports = async (req, res) => {
     const officesAvailable = [];
+
+    let offices = allOffices;
+    
+    const {name, email, notification} = req.query;
+
+    if(name) {
+        const officesName = Array.isArray(name) ? name : [name];
+
+        offices = officesName.map(name => allOffices.find(office => setOfficeName(office.label) === setOfficeName(name))).filter(Boolean);
+    }
 
     for (let i = 0; i < offices.length; i++) {
         const office = offices[i];
@@ -18,8 +27,9 @@ module.exports = async (req, res) => {
             officesAvailable.push(office);
         }
     }
+
     try {
-        await sendNotitification({email: EMAIL_TO, offices: officesAvailable});
+        await sendNotitification({email, offices: officesAvailable, notification});
     } catch(e) {
         console.log(e)
     }
