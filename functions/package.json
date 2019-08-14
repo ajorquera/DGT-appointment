@@ -1,7 +1,8 @@
 {
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "engines": {
     "node": "8"
@@ -15,7 +16,8 @@
     "handlebars": "^4.1.2",
     "mailgun-js": "^0.22.0",
     "module-alias": "^2.2.0",
-    "slack-notify": "^0.1.7"
+    "slack-notify": "^0.1.7",
+    "http-status-codes": "ajorquera/http-status-codes"
   },
   "_moduleAliases": {},
   "devDependencies": {

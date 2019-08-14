@@ -3,7 +3,8 @@
   "version": "1.3.0",
   "description": "Different cron jobs for life",
   "scripts": {
-    "test": "",
+    "test": "cd functions && npm test",
+    "test:watch": "cd functions && npm run test:watch",
     "start": "cd functions && nodemon ./serve.js"
   },
   "repository": {
@@ -18,7 +19,8 @@
   "homepage": "https://github.com/ajorquera/cronLife#readme",
   "devDependencies": {
     "eslint": "^6.1.0",
-    "eslint-config-airbnb-base": "^13.2.0"
+    "eslint-config-airbnb-base": "^13.2.0",
+    "nodemon": "^1.19.1"
   },
   "dependencies": {
     "fake-useragent": "^1.0.1"

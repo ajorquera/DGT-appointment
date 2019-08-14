@@ -2,7 +2,7 @@
 const checkAvailableAppointment = require('./checkAvailableAppointment');
 const sendNotitification        = require('./sendNotification');
 const allOffices                = require('./offices');
-const {setOfficeName}           = require('./utils');
+const {setOfficeName}           = require('../utils/utils');
 
 module.exports = async (req, res) => {
     const officesAvailable = [];
