@@ -3,7 +3,7 @@ const checkAvailableAppointment = require('./checkAvailableAppointment');
 const sendNotitification        = require('./sendNotification');
 const offices                   = require('./offices');
 const EMAIL_TO                  = process.env.EMAIL_TO;
-const {setOfficeName}           = require('./utils');
+const {setOfficeName}           = require('../utils/utils');
 
 module.exports = async (req, res) => {
     const officeName = req.params.officeName;

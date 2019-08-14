@@ -1,4 +1,4 @@
-const {setOfficeName} = require('../licenceAppointments/utils');
+const {setOfficeName} = require('../utils/utils');
 
 describe('setofficeName', () => {
     test('offices with "/"', () => {

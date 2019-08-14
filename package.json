@@ -4,6 +4,7 @@
   "description": "Different cron jobs for life",
   "scripts": {
     "test": "cd functions && npm test",
+    "test:watch": "cd functions && npm run test:watch",
     "start": "cd functions && nodemon ./serve.js"
   },
   "repository": {
