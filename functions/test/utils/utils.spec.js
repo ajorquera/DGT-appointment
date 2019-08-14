@@ -1,4 +1,4 @@
-const {setOfficeName} = require('../utils/utils');
+const {setOfficeName} = require('../../utils/utils');
 
 describe('setofficeName', () => {
     test('offices with "/"', () => {

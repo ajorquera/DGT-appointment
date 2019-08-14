@@ -1,8 +1,8 @@
 const axios   = require('axios');
 const cheerio = require('cheerio');
 
-const ERRORS                    = require('../utils/errors'); 
-const checkAvailableAppointment = require('../licenceAppointments/checkAvailableAppointment');
+const ERRORS                    = require('../../utils/errors'); 
+const checkAvailableAppointment = require('../../licenceAppointments/checkAvailableAppointment');
 
 jest.mock('axios', () => {
     const instance = jest.fn(() => Promise.resolve({data: 'body'}));
