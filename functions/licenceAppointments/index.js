@@ -1,6 +1,6 @@
 const express                   = require('express');
 const checkOffices              = require('./checkOffices');
-const handleError               = require('./handleError');
+const handleError               = require('../utils/handleError');
 const checkForOfficeAppointment = require('./checkForOfficeAppointment');
 
 const app = express();

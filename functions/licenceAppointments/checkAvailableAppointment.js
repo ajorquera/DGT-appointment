@@ -25,14 +25,9 @@ module.exports = async (office) => {
             viewStateStr
         });
 
-        error        = response.error;
         body         = response.body;
         html         = response.html;
         viewStateStr = response.viewStateStr;
-
-        if(error) {
-            throw error;
-        }
     }
     
     const {isAppointmentAvailable, datesAvailable} = processHtml(html);
@@ -94,7 +89,7 @@ const requestCB = (res) => {
 const handleError = (errorResponse) => {
     let error;
 
-    if (errorResponse && errorResponse.code) {
+    if (errorResponse && errorResponse.code === 'VIEW_STATE_MISSING') {
         error = errorResponse;
     } else {
         error = {
@@ -103,7 +98,7 @@ const handleError = (errorResponse) => {
         };
     }
 
-    return {error};
+    throw error;
 }
 
 const steps = [

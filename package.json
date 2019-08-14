@@ -19,7 +19,8 @@
   "homepage": "https://github.com/ajorquera/cronLife#readme",
   "devDependencies": {
     "eslint": "^6.1.0",
-    "eslint-config-airbnb-base": "^13.2.0"
+    "eslint-config-airbnb-base": "^13.2.0",
+    "nodemon": "^1.19.1"
   },
   "dependencies": {
     "fake-useragent": "^1.0.1"
