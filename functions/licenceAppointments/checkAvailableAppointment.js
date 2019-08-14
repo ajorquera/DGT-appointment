@@ -14,21 +14,19 @@ const requestInstance = axios.create({
 });
 
 module.exports = async (office) => {
-    let body;
-    let html;
     let viewStateStr;
-    
+    let response;
     for(const step of steps) {
-        const response = await requestStep({
+        response = await requestStep({
             ...step, 
             office, 
             viewStateStr
         });
 
-        body         = response.body;
-        html         = response.html;
         viewStateStr = response.viewStateStr;
     }
+
+    const {body, html} = response;
     
     const {isAppointmentAvailable, datesAvailable} = processHtml(html);
 

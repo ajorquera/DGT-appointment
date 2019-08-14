@@ -13,11 +13,12 @@
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
     "fake-useragent": "thiennq/fake-user-agent.git#c5b460fe9335b737df56bb55ff3064bab2f758cb",
+    "googleapis": "^42.0.0",
     "handlebars": "^4.1.2",
+    "http-status-codes": "ajorquera/http-status-codes",
     "mailgun-js": "^0.22.0",
     "module-alias": "^2.2.0",
-    "slack-notify": "^0.1.7",
-    "http-status-codes": "ajorquera/http-status-codes"
+    "slack-notify": "^0.1.7"
   },
   "_moduleAliases": {},
   "devDependencies": {
