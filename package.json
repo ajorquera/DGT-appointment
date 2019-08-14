@@ -3,7 +3,7 @@
   "version": "1.3.0",
   "description": "Different cron jobs for life",
   "scripts": {
-    "test": "",
+    "test": "cd functions && npm test",
     "start": "cd functions && nodemon ./serve.js"
   },
   "repository": {
