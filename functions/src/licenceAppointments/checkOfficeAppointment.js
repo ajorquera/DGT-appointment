@@ -1,7 +1,6 @@
-const cheerio       = require('cheerio');
-const querystring   = require('querystring');
 const {requestStep} = require('@utils/helpers');
 const URLS          = require('@utils/URLS');
+const fakeUserAgent = require('fake-useragent');
 
 module.exports = async (office) => {
     let viewStateStr;
@@ -10,7 +9,8 @@ module.exports = async (office) => {
         response = await requestStep({
             ...step, 
             office, 
-            viewStateStr
+            viewStateStr,
+            userAgent: fakeUserAgent()
         });
 
         viewStateStr = response.viewStateStr;

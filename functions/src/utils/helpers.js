@@ -1,7 +1,8 @@
-const fakeUserAgent = require('fake-useragent');
 const axios         = require('axios');
 const cheerio       = require('cheerio');
 const querystring   = require('querystring');
+
+const DEFAULT_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36';
 
 const requestInstance = axios.create({
     timeout: 10000,
@@ -17,11 +18,11 @@ module.exports = {
             // replace any spaces "/" "." ". "
             .replace(/(\. |-|\.| |\/)/g, '-');
     },
-    requestStep: ({method, data, url, office, viewStateStr}) => {
+    requestStep: ({method, data={}, url, office={}, viewStateStr, userAgent=DEFAULT_USER_AGENT}) => {
         const requestOpts = {
             method: method, 
             url, 
-            headers: {'User-Agent': fakeUserAgent()}
+            headers: {'User-Agent': userAgent}
         };
     
         if(method === 'post') {

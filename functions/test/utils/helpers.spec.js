@@ -1,4 +1,28 @@
-const {normalizeName} = require('@utils/helpers');
+const axios           = require('axios');
+const cheerio         = require('cheerio');
+const ERRORS          = require('@utils/errors'); 
+
+const {requestStep, normalizeName} = require('@utils/helpers');
+
+jest.mock('axios', () => {
+    const instance = jest.fn(() => Promise.resolve({data: 'body'}));
+
+    return {
+        create: () => instance,
+        instance
+    };
+});
+
+jest.mock('cheerio', () => {
+    const html = {};
+
+    html.attr = jest.fn(() => 'viewStateString');
+    html.find = () => html;
+    html.map = () => html;
+
+    return () => html;
+});
+
 
 describe('normalizeName', () => {
     test('offices with "/"', () => {
@@ -43,5 +67,41 @@ describe('normalizeName', () => {
         const example = normalizeName('Toledo-Talavera');
 
         expect(example).toBe('toledo-talavera');
+    });
+});
+
+describe('requestStep', () => {
+    
+    
+    test('handles error from DGT server', async () => {
+        const error = {message: 'some weird error message'};
+    
+        axios.instance.mockReturnValueOnce(Promise.reject(error));
+    
+        try {
+            await requestStep({});
+        } catch(e) {
+            expect(e).toEqual({code: ERRORS['REQUEST_FAILED'].code, data: error});
+        }
+    });
+
+    test('send an error when viewStateStr is missing', async () => {
+        const html = cheerio();
+    
+        html.attr.mockReturnValueOnce(null);
+    
+        try {
+            await requestStep({});
+        } catch(e) {
+            expect(e).toEqual({code: ERRORS['VIEW_STATE_MISSING'].code});
+        }
+    });
+
+    test('return a promise that resolves to {body, html, viewStateStr}', async() => {
+        const {body, html, viewStateStr} = await requestStep({});
+
+        expect(typeof body).toBe('string');
+        expect(typeof html).toBe('object');
+        expect(typeof viewStateStr).toBe('string');
     });
 });

@@ -1,6 +1,5 @@
 const {requestStep} = require('@utils/helpers');
 const offices       = require('@utils/offices');
-const states        = require('@utils/states');
 const URLS          = require('@utils/URLS');
 
 module.exports = async (user) => {
