@@ -4,9 +4,7 @@ module.exports = {
 		'/test/exclude/'	
 	],
 	moduleNameMapper: {
-		'^@http(.*)$': '<rootDir>/src/http$1',
-		'^@utils(.*)$': '<rootDir>/src/utils$1',
-		'^@background(.*)$': '<rootDir>/src/background$1'
+		'^@(licenceAppointments|utils|templates)(.*)$': '<rootDir>/src/$1$2',
 	},
 
 	testEnvironment: 'node',

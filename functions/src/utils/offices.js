@@ -1,4 +1,6 @@
-[
+const {normalizeName} = require('@utils/helpers');
+
+const offices = [
   {"code": "23", "label": "Alicante/Alacant"},
   {"code": "221", "label": "Alicante/Alacant-Elche"},
   {"code": "24", "label": "Almeria"},
@@ -66,4 +68,22 @@
   {"code": "124", "label": "Valladolid"},
   {"code": "125", "label": "Zamora"},
   {"code": "71", "label": "Zaragoza"}
-]
+];
+
+const get = (name) => {
+  let result;
+  
+  if(name) {
+    result = offices.find(office => normalizeName(office.label) === normalizeName(name));
+  } else {
+    result = offices;
+  }
+
+  return result;
+};
+
+
+
+module.exports = {
+  get
+}

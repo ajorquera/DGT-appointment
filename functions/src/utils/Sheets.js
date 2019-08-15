@@ -1,4 +1,4 @@
-const KEY_FILE_PATH = '../../credentials';
+const KEY_FILE_PATH = '../../../credentials';
 const {google} = require('googleapis');
 const SPREADSHEET_ID = process.env.SPREADSHEET_ID
 

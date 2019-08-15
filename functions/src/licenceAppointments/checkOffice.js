@@ -1,14 +1,14 @@
 
-const checkAvailableAppointment = require('./checkAvailableAppointment');
+const checkOfficeAppointment    = require('./checkOfficeAppointment');
 const sendNotitification        = require('./sendNotification');
-const offices                   = require('./offices');
+const offices                   = require('@utils/offices');
 const EMAIL_TO                  = process.env.EMAIL_TO;
-const {setOfficeName}           = require('../utils/utils');
+const {normalizeName}           = require('@utils/helpers');
 
 module.exports = async (req, res, next) => {
     const officeName = req.params.officeName;
 
-    const office = offices.find(officeObj => setOfficeName(officeObj.label) === setOfficeName(officeName));
+    const office = offices.get(officeName);
 
     if(!office) {
         return res.status(404).end();
@@ -17,7 +17,7 @@ module.exports = async (req, res, next) => {
     let response;
 
     try {
-        response = await checkAvailableAppointment(office);
+        response = await checkOfficeAppointment(office);
     } catch(e) {
         return next(e);
     }

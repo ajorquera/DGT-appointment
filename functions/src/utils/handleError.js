@@ -1,4 +1,4 @@
-const ERRORS = require('./errors');
+const ERRORS = require('@utils/errors');
 
 module.exports = (error, req, res, next) => {
     let errorToReport = ERRORS[error.code];

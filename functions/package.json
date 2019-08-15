@@ -20,7 +20,11 @@
     "module-alias": "^2.2.0",
     "slack-notify": "^0.1.7"
   },
-  "_moduleAliases": {},
+  "_moduleAliases": {
+    "@templates": "src/templates",
+    "@licenceAppointments": "src/licenceAppointments",
+    "@utils": "src/utils"
+  },
   "devDependencies": {
     "jest": "^24.8.0",
     "nodemon": "^1.19.1"

@@ -1,17 +1,7 @@
-const axios         = require('axios');
 const cheerio       = require('cheerio');
-const fakeUserAgent = require('fake-useragent');
 const querystring   = require('querystring');
-const URLS = [
-    'https://sedeapl.dgt.gob.es:7443/WEB_NCIT_CONSULTA/solicitarCita.faces',
-    'https://sedeapl.dgt.gob.es:7443/WEB_NCIT_CONSULTA/solicitarCitaPaso1.faces',
-    'https://sedeapl.dgt.gob.es:7443/WEB_NCIT_CONSULTA/solicitarCitaPaso2.faces'
-];
-
-const requestInstance = axios.create({
-    timeout: 10000,
-    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-});
+const {requestStep} = require('@utils/helpers');
+const URLS          = require('@utils/URLS');
 
 module.exports = async (office) => {
     let viewStateStr;
@@ -38,24 +28,6 @@ module.exports = async (office) => {
     }
 };
 
-const requestStep = ({method, data, url, office, viewStateStr}) => {
-    const requestOpts = {
-        method: method, 
-        url, 
-        headers: {'User-Agent': fakeUserAgent()}
-    };
-
-    if(method === 'post') {
-        requestOpts.data = querystring.stringify({
-            ...data, 
-            'javax.faces.ViewState': viewStateStr,
-            'publicacionesForm:oficina': office.code
-        });
-    }
-
-    return requestInstance(requestOpts).then(requestCB).catch(handleError);
-}
-
 processHtml = (html) => {
     const datesAvailable = html.find('.dias').map((i, elm) => {
         return elm.firstChild.firstChild.children[0].data;
@@ -65,38 +37,6 @@ processHtml = (html) => {
         datesAvailable: Array.from(datesAvailable),
         isAppointmentAvailable: !!datesAvailable.length
     };
-}
-
-const requestCB = (res) => {
-    const html = cheerio(res.data);
-    const viewStateStr = html.find('input[name="javax.faces.ViewState"]').attr('value');
-    
-    if(!viewStateStr) {
-        throw {
-            code: 'VIEW_STATE_MISSING'
-        };
-    }
-
-    return {
-        html, 
-        viewStateStr,
-        body: res.data 
-    };
-};
-
-const handleError = (errorResponse) => {
-    let error;
-
-    if (errorResponse && errorResponse.code === 'VIEW_STATE_MISSING') {
-        error = errorResponse;
-    } else {
-        error = {
-            code: 'REQUEST_FAILED',
-            data: errorResponse
-        };
-    }
-
-    throw error;
 }
 
 const steps = [
