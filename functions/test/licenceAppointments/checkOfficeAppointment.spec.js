@@ -46,10 +46,10 @@ test('there needs to be a different user-agent header per request', async () => 
     expect(userAgent1).not.toBe(userAgent2);
 });
 
-test('needs to return a promise that resolves to {checkOfficeAppointment, body, office, datesAvailable}', async () => {
+test('needs to return a promise that resolves to {isAppointmentAvailable, body, office, datesAvailable}', async () => {
     const response = await checkAvailableAppointment(office);
 
-    expect(typeof response.checkOfficeAppointment).toBe('boolean');
+    expect(typeof response.isAppointmentAvailable).toBe('boolean');
     expect(Array.isArray(response.datesAvailable)).toBe(true);
     expect(response.body).toBeDefined();
     expect(response.office).toBe(office);
