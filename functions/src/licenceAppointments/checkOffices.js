@@ -1,8 +1,10 @@
 
 const checkOfficeAppointment    = require('./checkOfficeAppointment');
 const sendNotitification        = require('./sendNotification');
-const allOffices                = require('@utils/offices');
+const Offices                   = require('@utils/offices');
 const {normalizeName}           = require('@utils/helpers');
+
+const allOffices = new Offices();
 
 module.exports = async (req, res) => {
     const officesAvailable = [];

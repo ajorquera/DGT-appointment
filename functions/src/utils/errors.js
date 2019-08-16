@@ -4,7 +4,7 @@ const {
 } = require('http-status-codes')
 
 const ERRORS = {
-    'UNKNOW': {
+    'UNKNOWN': {
         message: 'There was an unknown error',
         httpStatus: INTERNAL_SERVER_ERROR
     },

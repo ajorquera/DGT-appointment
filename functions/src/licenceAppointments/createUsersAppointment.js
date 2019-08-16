@@ -7,21 +7,24 @@ const sheets = new Sheets();
 sheets.init();
 
 module.exports = async (req, res, next) => {
-    const office = offices.get(req.params.officeName);
-
-    if(!office) {
-        return next({code: 'NOT_FOUND'});
-    }
-
+    const officesNotAvailable = [];    
     let users = await sheets.getUsers();
-    users = users.filter(user => offices.normalizeName(user.office) === offices.normalizeName(office.label));
 
     const appointments = [];
     for (const user of users) {
+        if(officesNotAvailable.indexOf(user.office) !== -1) {
+            continue;
+        }
+
+
         let appointment;
         try {
             appointment = await createAppointment(user);
-            appointments.push(appointment);
+            if(appointment) {
+                appointments.push(appointment);
+            } else {
+                officesNotAvailable.push(user.office);
+            }
         } catch (e) {
             return next(e);
         }

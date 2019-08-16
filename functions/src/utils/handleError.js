@@ -7,7 +7,7 @@ module.exports = (error, req, res, next) => {
         errorToReport = ERRORS.UNKNOWN;
     }
 
-    errorToReport.data = error.data;
+    errorToReport.data = error.data || error;
 
     console.error(new Error(errorToReport));
     res.status(errorToReport.httpStatus).json(errorToReport);
