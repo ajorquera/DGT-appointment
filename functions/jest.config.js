@@ -6,6 +6,7 @@ module.exports = {
 	moduleNameMapper: {
 		'^@(licenceAppointments|utils|templates)(.*)$': '<rootDir>/src/$1$2',
 	},
+	collectCoverageFrom : ["src/**/*.js"],
 
 	testEnvironment: 'node',
 	bail: 1,

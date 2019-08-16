@@ -3,7 +3,6 @@ const cheerio         = require('cheerio');
 const querystring     = require('querystring');
 const SocksProxyAgent = require('socks-proxy-agent');
 
-// use tor
 let httpsAgent
 if(process.env.USE_TOR) {
     const proxyOptions = `socks5://localhost:9050`;
@@ -15,6 +14,7 @@ const DEFAULT_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) Appl
 const requestInstance = axios.create({
     timeout: 10000,
     httpsAgent,
+    withCredentials: true,
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 });
 
@@ -27,14 +27,17 @@ module.exports = {
             // replace any spaces "/" "." ". "
             .replace(/(\. |-|\.| |\/)/g, '-');
     },
-    requestStep: ({method, data={}, url, viewStateStr, userAgent=DEFAULT_USER_AGENT}) => {
+    requestStep: ({method, cookies=[], data={}, url, viewStateStr, userAgent=DEFAULT_USER_AGENT}) => {
         const requestOpts = {
             method: method, 
             url, 
             headers: {
                 'User-Agent': userAgent,
-                'Content-Type': 'application/x-www-form-urlencoded'
-            }
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Cookie': cookies.join('; ')
+            },
+            withCredentials: true
+
         };
     
         if(method === 'post') {
@@ -51,7 +54,7 @@ module.exports = {
 const requestCB = (res) => {
     const html = cheerio(res.data);
     const viewStateStr = html.find('input[name="javax.faces.ViewState"]').attr('value');
-    
+    const cookies = res.headers['set-cookie'];
     if(!viewStateStr) {
         throw {
             code: 'VIEW_STATE_MISSING'
@@ -61,7 +64,8 @@ const requestCB = (res) => {
     return {
         html, 
         viewStateStr,
-        body: res.data 
+        body: res.data,
+        cookies
     };
 };
 

@@ -1,6 +1,4 @@
-const spreadsheetId     = process.env.GOOGLE_SPREADSHEET_ID;
 const Sheets            = require('@utils/Sheets');
-const offices           = require('@utils/offices');
 const createAppointment = require('./createAppointment');
 
 const sheets = new Sheets();
@@ -16,21 +14,35 @@ module.exports = async (req, res, next) => {
             continue;
         }
 
-
         let appointment;
         try {
-            appointment = await createAppointment(user);
-            if(appointment) {
-                appointments.push(appointment);
-            } else {
-                officesNotAvailable.push(user.office);
+            //appointment = await createAppointment(user);
+            appointment = {
+                date: '25/11/2019',
+                time: '9:00',
+                office: {
+                    code: '103',
+                    label: 'Ceuta'
+                },
+                user
             }
         } catch (e) {
             return next(e);
         }
+
+        if(appointment) {
+            appointments.push(appointment);
+        } else {
+            officesNotAvailable.push(user.office);
+        }
     }
     
-    await sendNotification({});
+    let notificationData;
+    try {
+        await sendNotification(notificationData);
+    } catch(e) {
+        next({code: 'NOTIFICATION', data: notificationData});
+    }
 
     res.json(appointments);
 };

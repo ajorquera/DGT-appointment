@@ -1,14 +1,14 @@
 const ERRORS = require('@utils/errors');
 
 module.exports = (error, req, res, next) => {
-    let errorToReport = ERRORS[error.code];
+    let errorToReport = ERRORS[error.code] || ERRORS.UNKNOWN;
 
-    if(!errorToReport) {
-        errorToReport = ERRORS.UNKNOWN;
+    errorToReport = {...errorToReport};
+
+    if(error.data) {
+        errorToReport.data = error.data;
     }
 
-    errorToReport.data = error.data || error;
-
-    console.error(new Error(errorToReport));
+    console.error(new Error(JSON.stringify(errorToReport)));
     res.status(errorToReport.httpStatus).json(errorToReport);
 }

@@ -1,6 +1,7 @@
 const {requestStep} = require('@utils/helpers');
 const Offices       = require('@utils/offices');
 const URLS          = require('@utils/URLS');
+const get           = require('lodash/get')
 
 const offices = new Offices();
 const states = new Offices('states');
@@ -9,6 +10,7 @@ module.exports = async (user) => {
     let response;
     let viewStateStr;
     let html;
+    let cookies;
 
     const office = offices.get(user.office);
 
@@ -25,12 +27,14 @@ module.exports = async (user) => {
             ...step, 
             data,
             office,
+            cookies,
             viewStateStr
         });
 
         html         = response.html;
         viewStateStr = response.viewStateStr;
         body         = response.body;
+        cookies      = response.cookies
 
         if(typeof step.validate === 'function') {
             const isValidStep = step.validate.call(this, {html, office, user, body})
@@ -39,58 +43,61 @@ module.exports = async (user) => {
         }
     }
 
-    return generateAppointment(html);
+    const appointmentDetails = generateAppointment(html);
+
+    return {...appointmentDetails, user, office}
 };
 
 const generateAppointment = (html) => {
     return {
-        
-    }
+        time: html.find('td[headers="hora"]').text(),
+        date: html.find('td[headers="fechaCita"]').text(),
+        office: html.find('td[headers="lugar"]').text()
+    };
 };
-const validateFirstSteps = ({html}) => {
+
+const isErrorMsg = ({html}) => {
     const msgError = html.find('.msgError')[0];
 
     let message; 
     if(msgError) {
         message = msgError.children[0].data;
     }
+
+    if(message && message.search('usted tiene una cita pendiente de CANJES') !== -1) {
+        throw {code: 'APPOINTMENT_EXIST'}
+    }
+
     return !msgError;
 };
 const steps = [
     {method: 'get', url: URLS[0]},
-    {method: 'post', url: URLS[0],  validate: validateFirstSteps, data: ({html, office}) => {
+    {method: 'post', url: URLS[0],  validate: isErrorMsg, data: ({html, office}) => {
         const timestamp = html.find('#timestampId')[0].attribs.value;
         return {
             'publicacionesForm': 'publicacionesForm',
             'publicacionesForm:oficina': office.code,
-            'timestampName': timestamp,
-            'honeypotName': '',
             'publicacionesForm:tipoTramiteinicializado': '-1',
         }
     }},
-    {method: 'post', url: URLS[0] , validate: validateFirstSteps, data: ({office, html}) => {
+    {method: 'post', url: URLS[0] , validate: isErrorMsg, data: ({office, html}) => {
         const timestamp = html.find('#timestampId')[0].attribs.value;
 
         return {
             'publicacionesForm': 'publicacionesForm',
             'publicacionesForm:oficina': office.code,
-            'publicacionesForm:foco': 'publicacionesForm:oficina',
-            'timestampName': timestamp,
-            'honeypotName': '',
             'publicacionesForm:tipoTramite': '3'
         }
     }},
-    {method: 'post', url: URLS[0], validate: validateFirstSteps, data: ({user, office, html}) => {
+    {method: 'post', url: URLS[0], validate: isErrorMsg, data: ({user, office, html}) => {
         const timestamp = html.find('#timestampId')[0].attribs.value;
 
         return {
             'publicacionesForm': 'publicacionesForm',
             'publicacionesForm:oficina': office.code,
-            'timestampName': timestamp,
-            'publicacionesForm:foco': 'publicacionesForm:tipoTramite',
             'publicacionesForm:tipoTramite': '3',
             'publicacionesForm:pais': '21',
-            'publicacionesForm:j_id70': 'continuar',
+            'publicacionesForm:j_id70': 'Continuar',
             'honeypotName': ''
         }
     }},
@@ -122,9 +129,9 @@ const steps = [
                 'publicacionesForm:autorizacion': 'on',
             }
         },
-        validate: validateFirstSteps
+        validate: isErrorMsg
     },
-    {method: 'post', url: URLS[3], validate: validateFirstSteps, data: ({user, html, office}) => {
+    {method: 'post', url: URLS[3], validate: isErrorMsg, data: ({user, html, office}) => {
         const timeOption = html.find('.buscIntCamposEvProvSelect optgroup option')[0];
         const timeAttr = timeOption.parentNode.parentNode.attribs.name;
         const time = timeOption.attribs.value;
@@ -136,26 +143,28 @@ const steps = [
             [buttonAttr]: 'Continuar',
         }
 
-    }, validate: validateFirstSteps},
+    }, validate: isErrorMsg},
     {method: 'post', url: URLS[4], data: ({html}) =>  {
         const code = html.find('input[name="j_id31:j_id275"]').attr('value');
 
         return {
+            'publicacionesForm': 'publicacionesForm',
             'j_id31': 'j_id31',
             'j_id31:j_id272': 'Confirmar',
             'j_id31:j_id275': code,
-            'j_id31:honeypot': ''
+            '\'j_id31:honeypot': ''
         };
 
     }, validate: ({html, body}) => {
-        isValid = validateFirstSteps({html});
+        let isValid = isErrorMsg({html});
 
-        const id = html.find('#j_id24')[0];
-        const msgError = html.find('.msgError')[0].firstChild.data;
+        if(isValid) {
+            const messageDOM = html.find('#j_id24');
+            const message = get(messageDOM, '[0].firstChild.data')
+            isValid = message === 'Estos son los datos de la cita solicitada';
+        }
 
-        const text = 'Estos son los datos de la cita solicitadaAyuda en ventana nueva'
-
-        return true;
+        return isValid;
     }},
 ]
 
