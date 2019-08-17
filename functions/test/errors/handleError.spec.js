@@ -1,5 +1,4 @@
-const handleError = require('@utils/handleError');
-const errors = require('@utils/errors');
+const {ERRORS, handleError} = require('@errors');
 
 let req;
 let res = {};
@@ -24,7 +23,7 @@ test('should return an APPOINTMENT_CREATION error', () => {
     const error = {code: 'APPOINTMENT_CREATION'}
     handleError(error, req, res);
 
-    checkError(errors['APPOINTMENT_CREATION']);    
+    checkError(ERRORS['APPOINTMENT_CREATION']);    
 });
 
 test('should return an UNKNOWN error', () => {
@@ -32,7 +31,7 @@ test('should return an UNKNOWN error', () => {
 
     handleError(error, req, res);
     
-    checkError(errors['UNKNOWN']);
+    checkError(ERRORS['UNKNOWN']);
 })
 
 test('should an error with data', () => {
@@ -41,7 +40,7 @@ test('should an error with data', () => {
 
     handleError(error, req, res);
 
-    checkError({...errors['UNKNOWN'], data});
+    checkError({...ERRORS['UNKNOWN'], data});
 })
 
 

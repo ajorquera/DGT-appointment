@@ -1,87 +1,51 @@
-const {requestStep} = require('@utils/helpers');
-const Offices       = require('@utils/offices');
-const URLS          = require('@utils/URLS');
-const get           = require('lodash/get')
+const get = require('lodash/get');
 
-const offices = new Offices();
-const states = new Offices('states');
+const {getOffices, getStates} = require('@utils/codeMapping');
 
-module.exports = async (user) => {
-    let response;
-    let viewStateStr;
-    let html;
-    let cookies;
+const URLS = [
+    'https://sedeapl.dgt.gob.es:7443/WEB_NCIT_CONSULTA/solicitarCita.faces',
+    'https://sedeapl.dgt.gob.es:7443/WEB_NCIT_CONSULTA/solicitarCitaPaso1.faces',
+    'https://sedeapl.dgt.gob.es:7443/WEB_NCIT_CONSULTA/solicitarCitaPaso2.faces',
+    'https://sedeapl.dgt.gob.es:7443/WEB_NCIT_CONSULTA/solicitarCitaPaso3.faces',
+    'https://sedeapl.dgt.gob.es:7443/WEB_NCIT_CONSULTA/solicitarCitaResumen.faces'
+];
 
-    const office = offices.get(user.office);
-
-    for (const step of steps) {
-        let data;
-        if(typeof step.data === 'function') {
-            data = step.data.call(null, {user, html, office});
-        } else {
-            data = step.data;
-        }
-
-    
-        response = await requestStep({
-            ...step, 
-            data,
-            office,
-            cookies,
-            viewStateStr
-        });
-
-        html         = response.html;
-        viewStateStr = response.viewStateStr;
-        body         = response.body;
-        cookies      = response.cookies
-
-        if(typeof step.validate === 'function') {
-            const isValidStep = step.validate.call(this, {html, office, user, body})
-
-            if(!isValidStep) return null; 
-        }
-    }
-
-    const appointmentDetails = generateAppointment(html);
-
-    return {...appointmentDetails, user, office}
-};
-
-const generateAppointment = (html) => {
-    return {
-        time: html.find('td[headers="hora"]').text(),
-        date: html.find('td[headers="fechaCita"]').text(),
-        office: html.find('td[headers="lugar"]').text()
-    };
-};
-
-const isErrorMsg = ({html}) => {
-    const msgError = html.find('.msgError')[0];
-
-    let message; 
-    if(msgError) {
-        message = msgError.children[0].data;
-    }
+const checkAppointmentExist = ({html, user}) => {
+    const msgErrorDOM = html.find('.msgError');
+    const message     = get(msgErrorDOM, '[0].children[0].data');
 
     if(message && message.search('usted tiene una cita pendiente de CANJES') !== -1) {
-        throw {code: 'APPOINTMENT_EXIST'}
+        throw {code: 'APPOINTMENT_EXIST'};
     }
 
-    return !msgError;
+    return isErrorMsg({user, html});
 };
-const steps = [
-    {method: 'get', url: URLS[0]},
-    {method: 'post', url: URLS[0],  validate: isErrorMsg, data: ({html, office}) => {
-        const timestamp = html.find('#timestampId')[0].attribs.value;
+
+const isErrorMsg = ({html, user}) => {
+    const msgErrorDOM = html.find('.msgError');
+    const message = msgErrorDOM.text();
+
+    if(message.search('El horario de atención al cliente está completo para los próximos días') !== -1) {
+        const office = getOffices(user.officeName);
+        throw {code: 'APPOINTMENT_NOT_AVAILABLE', data: office};
+    }
+
+    return !html.find('.msgError').length;
+};
+
+module.exports = [
+    {id: 'paso1', method: 'get', url: URLS[0]},
+    {method: 'post', url: URLS[0], validate: isErrorMsg, data: ({user}) => {
+        const office = getOffices(user.officeName);
+
         return {
             'publicacionesForm': 'publicacionesForm',
             'publicacionesForm:oficina': office.code,
             'publicacionesForm:tipoTramiteinicializado': '-1',
         }
     }},
-    {method: 'post', url: URLS[0] , validate: isErrorMsg, data: ({office, html}) => {
-        const timestamp = html.find('#timestampId')[0].attribs.value;
+    {id: 'paso2', method: 'post', url: URLS[0] , validate: isErrorMsg, data: ({user}) => {
+        const office = getOffices(user.officeName);
 
         return {
             'publicacionesForm': 'publicacionesForm',
@@ -89,8 +53,8 @@ const steps = [
             'publicacionesForm:tipoTramite': '3'
         }
     }},
-    {method: 'post', url: URLS[0], validate: isErrorMsg, data: ({user, office, html}) => {
-        const timestamp = html.find('#timestampId')[0].attribs.value;
+    {id: 'paso3', method: 'post', url: URLS[0], validate: isErrorMsg, data: ({user}) => {
+        const office = getOffices(user.officeName);
 
         return {
             'publicacionesForm': 'publicacionesForm',
@@ -99,17 +63,18 @@ const steps = [
             'publicacionesForm:pais': '21',
             'publicacionesForm:j_id70': 'Continuar',
             'honeypotName': ''
-        }
+        };
     }},
-    {method: 'post', url: URLS[1], data: {
+    {id: 'paso4', method: 'post', url: URLS[1], data: {
         'publicacionesForm': 'publicacionesForm',
         'publicacionesForm:area:0:j_id112': 'Continuar'
     }},
     {
+        id: 'paso5',
         method: 'post', 
         url: URLS[2], 
-        data: ({user, office}) => {
-            const stateCode = states.get(user.stateResidence).code;
+        data: ({user}) => {
+            const stateCode = getStates(user.stateName).code;
             
             return {
                 'publicacionesForm': 'publicacionesForm',
@@ -127,11 +92,11 @@ const steps = [
                 'publicacionesForm:j_id457:7:YVobservaciones': '',
                 'publicacionesForm:j_id2121': 'Solicitar',
                 'publicacionesForm:autorizacion': 'on',
-            }
+            };
         },
-        validate: isErrorMsg
+        validate: checkAppointmentExist
     },
-    {method: 'post', url: URLS[3], validate: isErrorMsg, data: ({user, html, office}) => {
+    {id: 'paso6', method: 'post', url: URLS[3], validate: isErrorMsg, data: ({html}) => {
         const timeOption = html.find('.buscIntCamposEvProvSelect optgroup option')[0];
         const timeAttr = timeOption.parentNode.parentNode.attribs.name;
         const time = timeOption.attribs.value;
@@ -141,10 +106,10 @@ const steps = [
             'publicacionesForm': 'publicacionesForm',
             [timeAttr]: time,
             [buttonAttr]: 'Continuar',
-        }
+        };
 
-    }, validate: isErrorMsg},
-    {method: 'post', url: URLS[4], data: ({html}) =>  {
+    }},
+    {id: 'final', method: 'post', url: URLS[4], data: ({html}) =>  {
         const code = html.find('input[name="j_id31:j_id275"]').attr('value');
 
         return {
@@ -155,16 +120,21 @@ const steps = [
             '\'j_id31:honeypot': ''
         };
 
-    }, validate: ({html, body}) => {
+    }, validate: ({html}) => {
         let isValid = isErrorMsg({html});
 
         if(isValid) {
             const messageDOM = html.find('#j_id24');
-            const message = get(messageDOM, '[0].firstChild.data')
+            const message = get(messageDOM, '[0].firstChild.data');
             isValid = message === 'Estos son los datos de la cita solicitada';
+        } 
+        
+        if(!isValid) {
+            const errorMessage = html.find('.msgError').text();
+            throw {code: 'APPOINTMENT_CREATION', data: {message: errorMessage}};
         }
 
         return isValid;
     }},
-]
+];
 

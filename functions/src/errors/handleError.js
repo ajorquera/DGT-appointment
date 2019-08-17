@@ -1,5 +1,6 @@
-const ERRORS = require('@utils/errors');
+const ERRORS = require('./ERRORS');
 
+// eslint-disable-next-line
 module.exports = (error, req, res, next) => {
     let errorToReport = ERRORS[error.code] || ERRORS.UNKNOWN;
 
@@ -11,4 +12,4 @@ module.exports = (error, req, res, next) => {
 
     console.error(new Error(JSON.stringify(errorToReport)));
     res.status(errorToReport.httpStatus).json(errorToReport);
-}
+};

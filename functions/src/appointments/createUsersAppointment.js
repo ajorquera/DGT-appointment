@@ -1,5 +1,6 @@
 const Sheets            = require('@utils/Sheets');
 const createAppointment = require('./createAppointment');
+const {notify}          = require('../notifications');
 
 const sheets = new Sheets();
 sheets.init();
@@ -16,37 +17,28 @@ module.exports = async (req, res, next) => {
 
         let appointment;
         try {
-            //appointment = await createAppointment(user);
-            appointment = {
-                date: '25/11/2019',
-                time: '9:00',
-                office: {
-                    code: '103',
-                    label: 'Ceuta'
-                },
-                user
-            }
+            appointment = await createAppointment(user);
         } catch (e) {
             return next(e);
         }
 
         if(appointment) {
             appointments.push(appointment);
+            try {
+                notifyUser({user, ...appointment});
+            } catch(e) {
+                next(e);
+            }
         } else {
             officesNotAvailable.push(user.office);
         }
-    }
-    
-    let notificationData;
-    try {
-        await sendNotification(notificationData);
-    } catch(e) {
-        next({code: 'NOTIFICATION', data: notificationData});
     }
 
     res.json(appointments);
 };
 
-const sendNotification = async () => {
-
-}
+const notifyUser = async (data) => {
+    const user = data.user;
+    
+    return notify({templateName: 'newAppointment', data, emails: user.email});
+};

@@ -1,26 +1,27 @@
-const {normalizeName} = require('@utils/helpers');
+const transformArray = (arr) => {
+  return arr.map(item => [normalizeName(item.label), item]);
+};
 
-class Offices {
-  constructor(type="offices") {
-    this.type = type;
+const normalizeName = (name) => {  
+  if(typeof name !== 'string') {
+    throw new Error('name is not a string');
   }
 
-  get(name) {
-    let result;
-    
-    const items = Offices[this.type];
+  return name
+      .toLowerCase()
+      // replace any accents 
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      // replace any spaces "/" "." ". "
+      .replace(/(\. |-|\.| |\/)/g, '-');
+};
 
-    if(name) {
-      result = items.find(item => normalizeName(item.label) === normalizeName(name));
-    } else {
-      result = items;
-    }
+module.exports = {
+  getOffices: (name) => (name ? officesMap.get(normalizeName(name)) : offices),
+  getStates: (name) => (name ? statesMap.get(normalizeName(name)) : states),
+  normalizeName
+};
 
-    return result;
-  }
-}
-
-Offices.offices = [
+const offices = [
   {"code": "23", "label": "Alicante/Alacant"},
   {"code": "221", "label": "Alicante/Alacant-Elche"},
   {"code": "24", "label": "Almeria"},
@@ -90,7 +91,7 @@ Offices.offices = [
   {"code": "71", "label": "Zaragoza"}
 ];
 
-Offices.states = [
+const states = [
   { code: "2", label: "Albacete" },
   { code: "3", label: "Alicante/Alacant" },
   { code: "4", label: "Almeria" },
@@ -145,4 +146,5 @@ Offices.states = [
   { code: "50", label: "Zaragoza" }
 ];
 
-module.exports = Offices;
+const officesMap = new Map(transformArray(offices));
+const statesMap = new Map(transformArray(states));

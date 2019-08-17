@@ -1,6 +1,6 @@
 const KEY_FILE_PATH = '../../../credentials';
 const {google} = require('googleapis');
-const SPREADSHEET_ID = process.env.SPREADSHEET_ID
+const SPREADSHEET_ID = process.env.SPREADSHEET_ID;
 
 class Sheets {
     constructor() {
@@ -21,7 +21,7 @@ class Sheets {
         }
     
         this.gSheets = google.sheets({version: 'v4', auth: client});
-        this.spreadsheetID = SPREADSHEET_ID
+        this.spreadsheetID = SPREADSHEET_ID;
 
         if(!this.spreadsheetID) {
             throw new Error('env variable SPREADSHEET_ID not found');
@@ -58,7 +58,6 @@ class Sheets {
 
         let processedData = [];
 
-        const headers = data[0];
         const rows = data.slice(1);
 
         rows.forEach(row => {
@@ -66,7 +65,7 @@ class Sheets {
 
             Sheets.columnMap.forEach((key, i) => {
                 user[key] = row[i];
-            })
+            });
             user.isOn = user.isOn === 'TRUE';
             processedData.push(user);
         });
@@ -84,12 +83,12 @@ Sheets.columnMap = [
     'id',
     'phoneNumber',
     'email',
-    'stateResidence',
+    'stateName',
     'birthDate',
     'licenceExpDate',
     'licenceNumber',
-    'office'
-]
+    'officeName'
+];
 
 
 module.exports = Sheets;

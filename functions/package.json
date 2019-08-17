@@ -3,7 +3,8 @@
   "scripts": {
     "test": "jest --coverage",
     "test:unit": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "lint": "eslint src/**/*.js"
   },
   "engines": {
     "node": "8"
@@ -24,10 +25,17 @@
   },
   "_moduleAliases": {
     "@templates": "src/templates",
-    "@licenceAppointments": "src/licenceAppointments",
+    "@appointments": "src/appointments",
+    "@availability": "src/availability",
+    "@errors": "src/errors",
+    "@notifications": "src/notifications",
     "@utils": "src/utils"
   },
   "devDependencies": {
+    "eslint": "^6.1.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jest": "^22.15.1",
     "jest": "^24.8.0",
     "nodemon": "^1.19.1",
     "socks-proxy-agent": "^4.0.2"
