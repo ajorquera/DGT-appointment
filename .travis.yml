@@ -7,9 +7,12 @@ branches:
   only:
     - master
 
+before_script:
+  - "cd functions && npm i"
+
 cache:
   directories:
-  - node_modules
+  - functions/node_modules
 
 script:
   - npm test
