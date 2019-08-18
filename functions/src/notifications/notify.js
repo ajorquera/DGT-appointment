@@ -2,10 +2,11 @@ const Handlebars       = require('handlebars');
 const sendEmail        = require('./sendEmail');
 const sendSlackMessage = require('./sendSlackMessage');
 const EMAIL_TO         = process.env.EMAIL_TO;
+const NOTIFY           = process.env.NOTIFY;
 const fs               = require('fs');
 const path             = require('path');
 
-module.exports = async ({data, templateName, type="email", emails=[EMAIL_TO]}) => {
+module.exports = async ({data, templateName, type=NOTIFY, emails=[EMAIL_TO]}) => {
 
     if(type === 'slack') {
         const message = slackMessages[templateName](data);

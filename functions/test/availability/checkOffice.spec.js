@@ -19,7 +19,8 @@ beforeEach(() => {
     res.json = jest.fn();  
     req.params = {
         officeName: 'madrid'
-    }
+    };
+    req.query = {};
     next = jest.fn()
 })
 
