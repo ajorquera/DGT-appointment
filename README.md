@@ -12,7 +12,9 @@ In Spain there is a system that works through appointments to get your driver's 
 
 All of this for $0. :hearts: [Google Cloud](https://cloud.google.com/)
 
-It uses `express` to create a few endpoints to manage appointments.
+It seems that they have a very old system to manage their appointments. This system is known to have many problems, specially from lack of personnal. [More Info](https://www.elconfidencial.com/espana/2019-08-13/dgt-colapso-oficinas-cita-previa_2175831/) 
+
+I wrapped their old system with a modern one that uses latest technologies. If you know anyone that works there, tell them I'll help them make a better one. 
 
 [API Documentation](/docs/offices.md)
 
