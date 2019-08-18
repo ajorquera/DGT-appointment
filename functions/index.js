@@ -1,1 +1,1 @@
-exports.licenceAppointments = require('./licenceAppointments');
+exports.licenceAppointments = require('./src');
