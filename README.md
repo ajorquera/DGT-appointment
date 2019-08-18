@@ -3,13 +3,13 @@
 This repo will contain serverless functions for different purposes
 
 ## Driver's licence appointment
-In Spain there is a system that works through appointments to get your driver's licence. The problem is that once the appointments are full, the system says "Please come back later to check for new appointments". This system is fucking annoying. I've been checking everyday and every single time it says I need to come back later to check. Soooo as a programmer that I am, I decided to build a cron job on top of google cloud, using Google Scheduler, Google Functions and Cloud Build. Serverless with CI/CD
+In Spain there is a system that works through appointments to get your driver's licence. The problem is that once the appointments are full, the system says "Please come back later to check for new appointments". This is fucking annoying. I've been checking everyday and every single time it says I need to come back later to check. Soooo as a programmer that I am, I decided to build a tool on top of google cloud, using Google Scheduler, Google Functions and Cloud Build. Serverless with CI/CD
 
-All of this for $0. 
+All of this for $0. :hearts: [Google Cloud](https://cloud.google.com/)
 
-The cron job just checks every 2-3 hours if there is an appointment available. Once it has a slot, it will send me an email. 
+This endpoint helps me with: creating appointments and checking wich offices that are available
 
-You can also check in which offices there are appointments available
+[API Documentation](/docs)
 
 ```
                                 ____
