@@ -19,7 +19,10 @@ module.exports = async (req, res, next) => {
         try {
             appointment = await createAppointment(user);
         } catch (e) {
-            return next(e);
+            if(e.code !== 'APPOINTMENT_NOT_AVAILABLE') {
+                return next(e);
+            }
+
         }
 
         if(appointment) {

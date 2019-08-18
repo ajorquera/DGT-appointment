@@ -33,7 +33,7 @@ class Sheets {
     }
 
     async getUsers() {
-        const response = await this.getRange('A1:M10');
+        const response = await this.getRange('A1:R10');
 
         const users = this._processResponse(response);
 

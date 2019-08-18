@@ -12,7 +12,7 @@ const URLS = [
 
 const checkAppointmentExist = ({html, user}) => {
     const msgErrorDOM = html.find('.msgError');
-    const message     = get(msgErrorDOM, '[0].children[0].data');
+    const message     = msgErrorDOM.text();
 
     if(message && message.search('usted tiene una cita pendiente de CANJES') !== -1) {
         throw {code: 'APPOINTMENT_EXIST'};
@@ -98,8 +98,8 @@ module.exports = [
     },
     {id: 'paso6', method: 'post', url: URLS[3], validate: isErrorMsg, data: ({html}) => {
         const timeOption = html.find('.buscIntCamposEvProvSelect optgroup option')[0];
-        const timeAttr = timeOption.parentNode.parentNode.attribs.name;
-        const time = timeOption.attribs.value;
+        const timeAttr = get(timeOption, 'parentNode.parentNode.attribs.name');
+        const time = get(timeOption , 'attribs.value');
         const buttonAttr = timeAttr.replace('horario', 'j_id56');
 
         return {
