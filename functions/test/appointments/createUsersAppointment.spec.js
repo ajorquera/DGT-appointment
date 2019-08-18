@@ -2,11 +2,19 @@ const createUserAppointment = require('@appointments/createUsersAppointment');
 const createAppointment     = require('@appointments/createAppointment');
 const Sheets                = require('@utils/Sheets');
 const mailgunJs             = require('mailgun-js');
+const {notify}              = require('@notifications');
+
+jest.mock('@notifications', () => {
+    return {
+        notify: jest.fn()
+    }
+});
 
 jest.mock('@utils/Sheets', () => {
-   const Sheets = function() {};
-   Sheets.prototype.init = () => Promise.resolve();
-   Sheets.prototype.getUsers = jest.fn(() => Promise.resolve([{}]));
+    const Sheets = function() {};
+    Sheets.prototype.init = () => Promise.resolve();
+    Sheets.prototype.getUsers = jest.fn(() => Promise.resolve([{}]));
+    Sheets.prototype.turnUser = jest.fn(() => Promise.resolve([{}]));
 
     return Sheets;
 });
@@ -40,11 +48,15 @@ test('handle userAppointment failure', async () => {
 
     createAppointment.mockReturnValueOnce(Promise.reject(error));
 
-    await createUserAppointment(req, res, next);
+    try {
+        await createUserAppointment(req, res, next);
+    } catch(e) {
+        expect(e.code).toBe('APPOINTMENT_CREATION');
+    }
 });
 
 test('creates multiple appointments from users', async () => {
-    await createUserAppointment(req, res, next);
+    //await createUserAppointment(req, res, next);
 
 })
 

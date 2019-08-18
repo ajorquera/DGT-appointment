@@ -45,6 +45,10 @@ const ERRORS = {
         message: 'There is no appointment for this office',
         httpStatus: NOT_FOUND
     },
+    'GOOGLE_SHEETS': {
+        message: 'Something went wrong using google sheets api',
+        httpStatus: INTERNAL_SERVER_ERROR
+    },
     'OFFICE_NOT_FOUND': {
         message: 'The offices you requested doesn\'t exist',
         httpStatus: NOT_FOUND

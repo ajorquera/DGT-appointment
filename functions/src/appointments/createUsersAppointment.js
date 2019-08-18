@@ -25,7 +25,8 @@ module.exports = async (req, res, next) => {
         if(appointment) {
             appointments.push(appointment);
             try {
-                notifyUser({user, ...appointment});
+                await notifyUser({user, ...appointment});
+                await sheets.turnUser(user, 'off');
             } catch(e) {
                 next(e);
             }

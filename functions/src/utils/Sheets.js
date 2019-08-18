@@ -39,9 +39,7 @@ class Sheets {
     }
 
     getRange(range) {
-        if(!this.initialized) {
-            throw new Error('instance needs to call init()');
-        }
+        this._checkIfInitialized();
 
         return this.gSheets.spreadsheets.values.get({
             spreadsheetId: this.spreadsheetID,
@@ -49,8 +47,40 @@ class Sheets {
         }).catch(this._handleRequestError.bind(this));
     }
 
+    writeToRange(range, values) {
+        this._checkIfInitialized();
+
+        return this.gSheets.spreadsheets.values.update({
+            spreadsheetId: this.spreadsheetID,
+            range: `users!${range}`,
+            valueInputOption: 'USER_ENTERED', //USER_ENTERED , RAW
+            resource: {values}
+        }).catch(this._handleRequestError.bind(this));
+    }
+
+    turnUser(user, option) {
+        if(['on', 'off'].indexOf(option) === -1) {
+            throw new Error('The are just two options "on", "off"');
+        }
+
+        if(!(user && user.row)) {
+            throw new Error('It needs the user information');
+        }
+
+        const value = option === 'on' ? 'TRUE' : 'FALSE';
+
+        return this.writeToRange(`B${Number(user.row) + 1}`, [[value]]);
+    }
+
+    _checkIfInitialized() {
+        if(!this.initialized) {
+            throw new Error('instance needs to call init()');
+        }
+    }
+
     _handleRequestError(err) {
-        throw err;
+        throw {code: 'GOOGLE_SHEETS', data: {message: err.message}};
+        
     }
 
     _processResponse(response) {
@@ -75,6 +105,7 @@ class Sheets {
 }
 
 Sheets.columnMap = [
+    'row',
     'isOn',
     'date',
     'name',
