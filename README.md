@@ -16,6 +16,8 @@ It seems that they have a very old system to manage their appointments. This sys
 
 I wrapped their old system with a modern one that uses latest technologies. If you know anyone that works there, tell them I'll help them make a better one. 
 
+**NOTE:** *If they ever implement a captcha system, this tool is worthless.*
+
 [API Documentation](/docs/offices.md)
 
 ```
