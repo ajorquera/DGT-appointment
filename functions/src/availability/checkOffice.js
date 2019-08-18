@@ -6,6 +6,7 @@ module.exports = async (req, res, next) => {
     const officeName = req.params.officeName;
 
     const office = getOffices(officeName);
+    const notificationType = req.query['notification-type'];
 
     if(!office) {
         return res.status(404).end();
@@ -22,13 +23,17 @@ module.exports = async (req, res, next) => {
     const {isAppointmentAvailable, datesAvailable} = response;
 
     if(isAppointmentAvailable) {
-        await notify({
-            type: 'slack', 
-            templateName: 'officeAvailable', 
-            data: {
-                offices: [{...office, datesAvailable}]
-            }
-        });
+        try {
+            await notify({
+                type: notificationType, 
+                templateName: 'officeIsAvailable', 
+                data: {
+                    offices: [{...office, datesAvailable}]
+                }
+            });
+        } catch(e) {
+            return next(e);
+        }
     }
     
     res.json({
