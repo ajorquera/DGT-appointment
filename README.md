@@ -12,7 +12,7 @@ In Spain there is a system that works through appointments to get your driver's 
 
 All of this for $0. :hearts: [Google Cloud](https://cloud.google.com/)
 
-This endpoint helps me with creating appointments and checking which offices are available
+It uses `express` to create a few endpoints to manage appointments.
 
 [API Documentation](/docs/offices.md)
 
