@@ -10,6 +10,7 @@ module.exports = async ({data, templateName, type=NOTIFY, emails=[EMAIL_TO]}) =>
 
     if(type === 'slack') {
         const message = slackMessages[templateName](data);
+        
         await sendSlackMessage({message});
 
     } else if (type === 'email') {
@@ -23,11 +24,11 @@ module.exports = async ({data, templateName, type=NOTIFY, emails=[EMAIL_TO]}) =>
 const readFile = (path) => {
     return new Promise((resolve, reject) => {
         fs.readFile(path, 'utf8', (err, data) => {
-            err ? reject(err): resolve(data);
+            err ? reject({code: 'TEMPLATE_MISSING', data: err}): resolve(data);
         });
     });
 };
 
 const slackMessages = {
-    officeAvailable: Handlebars.compile("These offices are available: {{#each offices}} {{label}} - {{datesAvailable.[0]}} {{/each}}")
+    officeIsAvailable: Handlebars.compile("These offices are available: {{#each offices}} {{label}} - {{datesAvailable.[0]}} {{/each}}")
 };

@@ -52,6 +52,10 @@ const ERRORS = {
     'OFFICE_NOT_FOUND': {
         message: 'The offices you requested doesn\'t exist',
         httpStatus: NOT_FOUND
+    },
+    'TEMPLATE_MISSING': {
+        message: 'The template is invalid',
+        httpStatus: INTERNAL_SERVER_ERROR
     }
 };
 

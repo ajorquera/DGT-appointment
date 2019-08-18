@@ -6,9 +6,16 @@
     "configurations": [
         {
             "type": "node",
+            "name": "jest",
             "request": "launch",
-            "name": "test",
-            "program": "${workspaceFolder}/functions/test.js"
+            "program": "${workspaceFolder}/functions/node_modules/jest/bin/jest",
+            "args": [
+                "--runInBand"
+            ],
+            "cwd": "${workspaceFolder}/functions",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "disableOptimisticBPs": true
         },
         {
             "type": "node",

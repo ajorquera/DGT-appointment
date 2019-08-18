@@ -23,13 +23,17 @@ module.exports = async (req, res, next) => {
     const {isAppointmentAvailable, datesAvailable} = response;
 
     if(isAppointmentAvailable) {
-        await notify({
-            type: notificationType, 
-            templateName: 'officeAvailable', 
-            data: {
-                offices: [{...office, datesAvailable}]
-            }
-        });
+        try {
+            await notify({
+                type: notificationType, 
+                templateName: 'officeIsAvailable', 
+                data: {
+                    offices: [{...office, datesAvailable}]
+                }
+            });
+        } catch(e) {
+            return next(e);
+        }
     }
     
     res.json({
