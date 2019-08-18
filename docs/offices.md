@@ -61,7 +61,7 @@ Endpoint to manage appointment from different offices.
         "officeAddress": "Ceuta, calle mendez alvaro 24",
         "id": "84657465M"
     ]
-        ```
+    ```
 
 ## Manage appointment from a specific office [/offices/{officeName}]
 Manages appointments from a specific office.
