@@ -13,9 +13,11 @@ class Sheets {
         });
     
         let client;
+
+
         if(process.env.GCLOUD_PROJECT) {
             client = await auth.getClient();
-        } else {
+        } else if (process.env.NODE_ENV !== 'test')  {
             const serviceAccount = require(KEY_FILE_PATH);
             client = auth.fromJSON(serviceAccount);
         }

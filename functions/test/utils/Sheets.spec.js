@@ -1,6 +1,6 @@
 process.env.SPREADSHEET_ID = 'some value';
 
-const Sheets = require('@utils/Sheets')
+const Sheets = require('@utils/Sheets');
 const {google} = require('googleapis');
 
 jest.mock('googleapis', () => {
@@ -26,6 +26,7 @@ jest.mock('googleapis', () => {
     
     return {google};
 });
+
 let sheets;
 beforeEach(async () => {
     sheets = new Sheets();
