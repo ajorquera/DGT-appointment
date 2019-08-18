@@ -4,18 +4,17 @@ module.exports = {
 		'/test/exclude/'	
 	],
 	moduleNameMapper: {
-		'^@http(.*)$': '<rootDir>/src/http$1',
-		'^@utils(.*)$': '<rootDir>/src/utils$1',
-		'^@background(.*)$': '<rootDir>/src/background$1'
+		'^@(errors|appointments|availability|notifications|utils|templates)(.*)$': '<rootDir>/src/$1$2',
 	},
+	collectCoverageFrom : ["src/**/*.js"],
 
 	testEnvironment: 'node',
 	bail: 1,
 	coverageThreshold: {
 		global: {
-			branches: 80,
-			functions: 80,
-			lines: 80
+			branches: 40,
+			functions: 30,
+			lines: 50
 		}
 	}
 };

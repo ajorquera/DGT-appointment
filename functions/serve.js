@@ -1,13 +1,10 @@
 require('dotenv').config();
+require('module-alias/register');
 
-const checkAppointment = require('./licenceAppointments');
-
-const bodyParser = require('body-parser');
+const app = require('./src/app');
 
 const port = 8080;
 
-const message = `app listening in port: ${port}`
+const message = `app listening in port: ${port}`;
 
-checkAppointment.use(bodyParser.json());
-
-checkAppointment.listen(port, () => console.log(message));
+app.listen(port, () => console.log(message));

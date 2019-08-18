@@ -1,5 +1,5 @@
 {
   "hooks": {
-    "pre-push": "npm test"
+    "pre-push": "npm run test:ci"
   }
 }

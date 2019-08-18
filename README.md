@@ -1,15 +1,24 @@
 # CRON LIFE
 
+[![Build Status](https://travis-ci.org/ajorquera/cronLife.svg?branch=master)](https://travis-ci.org/ajorquera/cronLife)
+
 This repo will contain serverless functions for different purposes
 
 ## Driver's licence appointment
-In Spain there is a system that works through appointments to get your driver's licence. The problem is that once the appointments are full, the system says "Please come back later to check for new appointments". This system is fucking annoying. I've been checking everyday and every single time it says I need to come back later to check. Soooo as a programmer that I am, I decided to build a cron job on top of google cloud, using Google Scheduler, Google Functions and Cloud Build. Serverless with CI/CD
 
-All of this for $0. 
+![appointment-screenshot](images/appointment-screenshot.png)
 
-The cron job just checks every 2-3 hours if there is an appointment available. Once it has a slot, it will send me an email. 
+In Spain there is a system that works through appointments to get your driver's licence. The problem is that once the appointments are full, the system says "Please come back later to check for new appointments". This is fucking annoying. I've been checking everyday and every single time it says I need to come back later to check. Soooo as a programmer that I am, I decided to build a tool on top of google cloud, using Google Scheduler, Google Functions and Cloud Build. Serverless with CI/CD
 
-You can also check in which offices there are appointments available
+All of this for $0. :hearts: [Google Cloud](https://cloud.google.com/)
+
+It seems that they have a very old system to manage their appointments. This system is known to have many problems, specially from lack of personnal. [More Info](https://www.elconfidencial.com/espana/2019-08-13/dgt-colapso-oficinas-cita-previa_2175831/) 
+
+I wrapped their old system with a modern one that uses latest technologies. If you know anyone that works there, tell them I'll help them make a better one. 
+
+**NOTE:** *If they ever implement a captcha system, this tool is worthless.*
+
+[API Documentation](/docs/offices.md)
 
 ```
                                 ____
