@@ -1,6 +1,6 @@
-[![Build Status](https://travis-ci.org/ajorquera/cronLife.svg?branch=master)](https://travis-ci.org/ajorquera/cronLife)
-
 # CRON LIFE
+
+[![Build Status](https://travis-ci.org/ajorquera/cronLife.svg?branch=master)](https://travis-ci.org/ajorquera/cronLife)
 
 This repo will contain serverless functions for different purposes
 
@@ -11,7 +11,7 @@ All of this for $0. :hearts: [Google Cloud](https://cloud.google.com/)
 
 This endpoint helps me with: creating appointments and checking wich offices that are available
 
-[API Documentation](/docs)
+[API Documentation](/docs/offices.md)
 
 ```
                                 ____
