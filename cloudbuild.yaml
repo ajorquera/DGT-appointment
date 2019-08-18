@@ -13,6 +13,6 @@ steps:
     '--trigger-http', 
     '--runtime=nodejs8', 
     '--timeout=540s',
-    '--update-env-vars', 'EMAIL_TO=${_EMAIL_TO}, MAILGUN_API_KEY=${_MAILGUN_API_KEY}, MAILGUN_DOMAIN=${_MAILGUN_DOMAIN}, NOTIFY=${_NOTIFY}, SLACK_WEBHOOK_URL=${_SLACK_WEBHOOK_URL}'
+    '--update-env-vars', 'SPREADSHEET_ID=${_SPREADSHEET_ID}, EMAIL_TO=${_EMAIL_TO}, MAILGUN_API_KEY=${_MAILGUN_API_KEY}, MAILGUN_DOMAIN=${_MAILGUN_DOMAIN}, NOTIFY=${_NOTIFY}, SLACK_WEBHOOK_URL=${_SLACK_WEBHOOK_URL}'
   ]
   dir: 'functions'
