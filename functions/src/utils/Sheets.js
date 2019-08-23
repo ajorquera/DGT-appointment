@@ -40,11 +40,11 @@ class Sheets {
     async getUsers() {
         const response = await this.getRange('A1:R10');
 
-        const users = this._processResponse(response);
+        const users = this._processResponse(response).filter(user => user.isOn);
 
         users.forEach(this._validateUser);
 
-        return users.filter(user => user.isOn);
+        return users;
     }
 
     getRange(range) {
@@ -118,7 +118,7 @@ class Sheets {
 
             return (
                 key && 
-                value && 
+                value !== undefined && value !== null && 
                 (
                     typeof value === 'string' ||
                     key === 'isOn' && typeof value === 'boolean'

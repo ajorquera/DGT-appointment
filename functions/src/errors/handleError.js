@@ -15,7 +15,7 @@ module.exports = (error, req, res, next) => {
     if(errorToReport.httpStatus >= 500) {
         console.error(err);
     } else if(errorToReport.httpStatus >= 400) {
-        console.warning(err);
+        console.warn(err);
     }
 
     res.status(errorToReport.httpStatus).json(errorToReport);
