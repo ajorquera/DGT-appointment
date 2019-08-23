@@ -3,32 +3,11 @@ process.env.SPREADSHEET_ID = 'some value';
 const Sheets = require('@utils/Sheets');
 const {google} = require('googleapis');
 
-jest.mock('googleapis', () => {
-    const auth = {
-        fromJSON: jest.fn(),
-        getCLient: jest.fn(() => Promise.resolve())  
-    };
-
-    const response = {data: {values: [[]]}}
-
-    const sheets = {};
-    sheets.spreadsheets = {
-        values: {
-            get: jest.fn(() => Promise.resolve(response)),
-            update: jest.fn(() => Promise.resolve(response))
-        }
-    };
-    
-    const google = {
-        auth: {GoogleAuth: jest.fn(() => auth)},
-        sheets: jest.fn(() => sheets)
-    };
-    
-    return {google};
-});
-
 let sheets;
 beforeEach(async () => {
+    google.auth.GoogleAuth.mockClear();
+    google.sheets().spreadsheets.values.get.mockClear();
+    
     sheets = new Sheets();
     await sheets.init()   
 });
@@ -59,6 +38,34 @@ test('should return an error if option is diffirent "on","off"', async () => {
     } catch (e) {
     expect(e.message).toBe('The are just two options "on", "off"');        
     }
+});
+
+test('should not run whole function if init is called twice', async () => {
+    google.auth.GoogleAuth.mockClear();
+
+    const sheets = new Sheets();
+    
+    expect(google.auth.GoogleAuth.mock.calls.length).toBe(0);
+
+    await sheets.init();
+
+    expect(google.auth.GoogleAuth.mock.calls.length).toBe(1);
+
+    await sheets.init();
+
+    expect(google.auth.GoogleAuth.mock.calls.length).toBe(1);
+});
+
+test('should throw error if the structure of users is wrong', async () => {
+    google.sheets().spreadsheets.values.get.mockReturnValueOnce(Promise.resolve({data: {values: [[], ['osme']]}}));
+
+    try {
+        await sheets.getUsers();
+    } catch (e) {  
+        expect(e.message).toBe('user structure is wrong');
+    }
 })
+
+
 
 

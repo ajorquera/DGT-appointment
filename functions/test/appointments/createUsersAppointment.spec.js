@@ -13,7 +13,7 @@ jest.mock('@notifications', () => {
 jest.mock('@utils/Sheets', () => {
     const Sheets = function() {};
     Sheets.prototype.init = () => Promise.resolve();
-    Sheets.prototype.getUsers = jest.fn(() => Promise.resolve([{}]));
+    Sheets.prototype.getUsers = jest.fn(() => Promise.resolve([{officeName: 'madrid'}]));
     Sheets.prototype.turnUser = jest.fn(() => Promise.resolve([{}]));
 
     return Sheets;
@@ -60,10 +60,23 @@ test('creates multiple appointments from users', async () => {
 
 })
 
-test('doesn\'t  iteerates for an office that already doestn have appointments', () => {
+test('doesn\'t  iterates for an office that already doestn have appointments', () => {
     
 });
 
 test('throws an error when notification failes', () => {
     
 });
+
+test('should try to create appointmnet for a user that has multiple offices', () => {
+    
+});
+
+test('should check if user get notified when an appointment is created', () => {
+    
+});
+
+test('should check if user gets turn off in sheet when an appointment is created', () => {
+    
+});
+

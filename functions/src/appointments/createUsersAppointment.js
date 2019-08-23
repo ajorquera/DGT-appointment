@@ -3,38 +3,43 @@ const createAppointment = require('./createAppointment');
 const {notify}          = require('../notifications');
 
 const sheets = new Sheets();
-sheets.init();
 
 module.exports = async (req, res, next) => {
+    await sheets.init();
     const officesNotAvailable = [];    
     let users = await sheets.getUsers();
 
     const appointments = [];
     for (const user of users) {
-        if(officesNotAvailable.indexOf(user.office) !== -1) {
-            continue;
-        }
+        const offices = user.officeName.split(',');
 
-        let appointment;
-        try {
-            appointment = await createAppointment(user);
-        } catch (e) {
-            if(e.code !== 'APPOINTMENT_NOT_AVAILABLE') {
-                return next(e);
+        for (const officeName of offices) {
+            if(officesNotAvailable.indexOf(officeName) !== -1) {
+                continue;
             }
-
-        }
-
-        if(appointment) {
-            appointments.push(appointment);
+    
+            let appointment;
             try {
-                await notifyUser({user, ...appointment});
-                await sheets.turnUser(user, 'off');
-            } catch(e) {
-                next(e);
+                appointment = await createAppointment({...user, officeName});
+            } catch (e) {
+                if(e.code !== 'APPOINTMENT_NOT_AVAILABLE') {
+                    return next(e);
+                }
             }
-        } else {
-            officesNotAvailable.push(user.office);
+    
+            if(appointment) {
+                appointments.push(appointment);
+                try {
+                    await notifyUser({user, ...appointment});
+                    await sheets.turnUser(user, 'off');
+                } catch(e) {
+                     return next(e);
+                }
+
+                break;
+            } else {
+                officesNotAvailable.push(user.office);
+            }   
         }
     }
 

@@ -9,6 +9,7 @@ const normalizeName = (name) => {
 
   return name
       .toLowerCase()
+      .trim()
       // replace any accents 
       .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
       // replace any spaces "/" "." ". "

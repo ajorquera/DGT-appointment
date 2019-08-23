@@ -55,6 +55,13 @@ describe('normalizeName', () => {
     
         expect(example).toBe('toledo-talavera');
     });
+
+    test('should trim any white space', () => {
+        const example = normalizeName(' Toledo-Talavera      ');
+    
+        expect(example).toBe('toledo-talavera');
+    })
+    
 });
 
 describe('getOffices', () => {

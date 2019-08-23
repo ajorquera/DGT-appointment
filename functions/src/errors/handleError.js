@@ -10,6 +10,13 @@ module.exports = (error, req, res, next) => {
         errorToReport.data = error.data;
     }
 
-    console.error(new Error(JSON.stringify(errorToReport)));
+    const err = new Error(JSON.stringify(errorToReport));
+
+    if(errorToReport.httpStatus >= 500) {
+        console.error(err);
+    } else if(errorToReport.httpStatus >= 400) {
+        console.warning(err);
+    }
+
     res.status(errorToReport.httpStatus).json(errorToReport);
 };

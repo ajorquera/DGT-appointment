@@ -1,6 +1,6 @@
 const RequestSteps = require('@utils/RequestSteps');
-const {getOffices}  = require('@utils/codeMapping');
-const steps         = require('../steps');
+const {getOffices} = require('@utils/codeMapping');
+const steps        = require('../steps');
 
 module.exports = async (user) => {
     let html;

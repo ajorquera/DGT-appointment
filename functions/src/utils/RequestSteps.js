@@ -85,7 +85,7 @@ class RequestSteps {
 
     _buildRequest() {
         return axios.create({
-            timeout: 10000,
+            timeout: 20000,
             httpsAgent,
             withCredentials: true,
             headers: {

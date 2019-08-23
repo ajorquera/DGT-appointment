@@ -8,6 +8,11 @@ class Sheets {
     }
 
     async init() {
+        if(this.initialized) {
+            return Promise.resolve();
+        }
+
+
         const auth = new google.auth.GoogleAuth({
             scopes: 'https://www.googleapis.com/auth/spreadsheets'
         });
@@ -36,6 +41,8 @@ class Sheets {
         const response = await this.getRange('A1:R10');
 
         const users = this._processResponse(response);
+
+        users.forEach(this._validateUser);
 
         return users.filter(user => user.isOn);
     }
@@ -104,6 +111,25 @@ class Sheets {
 
         return processedData;
     }
+
+    _validateUser(user) {
+        const isValid = Sheets.columnMap.every(key => {
+            const value = user[key];
+
+            return (
+                key && 
+                value && 
+                (
+                    typeof value === 'string' ||
+                    key === 'isOn' && typeof value === 'boolean'
+                )
+            );
+        });
+
+        if(!isValid) {
+            throw new Error('user structure is wrong');
+        }
+    }
 }
 
 Sheets.columnMap = [
@@ -122,6 +148,5 @@ Sheets.columnMap = [
     'licenceNumber',
     'officeName'
 ];
-
 
 module.exports = Sheets;
