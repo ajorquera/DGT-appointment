@@ -19,6 +19,7 @@ jest.mock('cheerio', () => {
 
     html.attr = jest.fn(() => 'viewStateString');
     html.find = () => html;
+    html.text = jest.fn(() => '');
     html.map = () => html;
 
     return () => html;
@@ -45,15 +46,34 @@ test('should make a step post request with data as a function', async () => {
 })
 
 
+test('handles error from DGT server with excesive requests', async () => {
+    const message = 'Se ha sobrepasado el umbral de peticiones del servicio';
+    const status = 503;
+    const data = `<p style="red">${message}</p>`
+    
+    cheerio().text.mockReturnValueOnce(message);
+    
+    axios.instance.mockReturnValueOnce(Promise.reject({response: {data, status}}));
+
+    try {
+        await requestSteps.send({});
+    } catch(e) {
+        expect(e).toEqual({code: ERRORS['REQUEST_FAILED'].code, data: {data, status, message}});
+    }
+});
+
 test('handles error from DGT server', async () => {
-    const error = {message: 'some weird error message'};
+    const status = 503;
+    const data = `<p>something<p/>`;
+
+    const error = {response: {data, status}};
 
     axios.instance.mockReturnValueOnce(Promise.reject(error));
 
     try {
         await requestSteps.send({});
     } catch(e) {
-        expect(e).toEqual({code: ERRORS['REQUEST_FAILED'].code, data: error});
+        expect(e).toEqual({code: ERRORS['REQUEST_FAILED'].code, data: {status, data}});
     }
 });
 

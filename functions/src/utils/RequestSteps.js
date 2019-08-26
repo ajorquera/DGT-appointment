@@ -74,13 +74,30 @@ class RequestSteps {
         if (errorResponse && ERRORS[errorResponse.code]) {
             error = errorResponse;
         } else {
-            error = {
-                code: 'REQUEST_FAILED',
-                data: errorResponse
-            };
+            error = this._processFailedDGTRequest(errorResponse);
         }
 
         throw error;
+    }
+
+    _processFailedDGTRequest(error) {
+        const html = cheerio(error.response.data);
+
+        let message = html.find('p[style]').text();
+        const isExcesivePetitions = message === 'Se ha sobrepasado el umbral de peticiones del servicio';
+
+        if(!isExcesivePetitions) {
+            message = undefined;
+        }
+
+        return {
+            code: 'REQUEST_FAILED',
+            data: {
+                status: error.response.status,
+                data: error.response.data,
+                message
+            }
+        };
     }
 
     _buildRequest() {
@@ -117,9 +134,11 @@ class RequestSteps {
         if(typeof this._step.validate === 'function') {
             isValidStep= this._step.validate.call(this, {...this._args, html});
         }
-
+ 
         return isValidStep;
     }
 }
+
+RequestSteps.REQUEST_DELAY = 10000;
 
 module.exports = RequestSteps;
