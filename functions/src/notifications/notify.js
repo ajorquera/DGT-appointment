@@ -2,7 +2,7 @@ const Handlebars       = require('handlebars');
 const sendEmail        = require('./sendEmail');
 const sendSlackMessage = require('./sendSlackMessage');
 const EMAIL_TO         = process.env.EMAIL_TO;
-const NOTIFY           = process.env.NOTIFY;
+const NOTIFY           = process.env.NOTIFY || 'email';
 const fs               = require('fs');
 const path             = require('path');
 
