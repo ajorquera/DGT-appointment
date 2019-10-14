@@ -25,7 +25,7 @@ class RequestSteps {
         this.viewStateStr = '';
     }
 
-    send(step) {
+    async send(step) {
         this._step = step;
 
         const {method, url} = step;
@@ -38,7 +38,7 @@ class RequestSteps {
         };
 
         if(method === 'post') {
-            requestOpts.data = this._processData();
+            requestOpts.data = await this._processData();
         }
 
         return this._request(requestOpts).then(this._onResolve.bind(this)).catch(this._onError.bind(this));
@@ -112,7 +112,7 @@ class RequestSteps {
         });
     }
 
-    _processData() {
+    async _processData() {
         const stepData = this._step.data;
         let data = {};
 
@@ -120,6 +120,11 @@ class RequestSteps {
             data = stepData.call(this, {...this._args, html: this._html});
         } else if (stepData && typeof stepData === 'object') {
             data = stepData;
+        }
+
+        //check if is a promise
+        if(data && data.then) {
+            data = await data;
         }
 
         return querystring.stringify({

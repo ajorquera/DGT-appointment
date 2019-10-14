@@ -1,14 +1,8 @@
 const get = require('lodash/get');
+const getCaptchaCode = require('@utils/getCaptchaCode');
+const {URLS} = require('@utils/constants');
 
 const {getOffices, getStates} = require('@utils/codeMapping');
-
-const URLS = [
-    'https://sedeapl.dgt.gob.es:7443/WEB_NCIT_CONSULTA/solicitarCita.faces',
-    'https://sedeapl.dgt.gob.es:7443/WEB_NCIT_CONSULTA/solicitarCitaPaso1.faces',
-    'https://sedeapl.dgt.gob.es:7443/WEB_NCIT_CONSULTA/solicitarCitaPaso2.faces',
-    'https://sedeapl.dgt.gob.es:7443/WEB_NCIT_CONSULTA/solicitarCitaPaso3.faces',
-    'https://sedeapl.dgt.gob.es:7443/WEB_NCIT_CONSULTA/solicitarCitaResumen.faces'
-];
 
 const checkAppointmentExist = ({html, user}) => {
     const msgErrorDOM = html.find('.msgError');
@@ -42,7 +36,7 @@ module.exports = [
             'publicacionesForm': 'publicacionesForm',
             'publicacionesForm:oficina': office.code,
             'publicacionesForm:tipoTramiteinicializado': '-1',
-        }
+        };
     }},
     {id: 'paso2', method: 'post', url: URLS[0] , validate: isErrorMsg, data: ({user}) => {
         const office = getOffices(user.officeName);
@@ -51,7 +45,7 @@ module.exports = [
             'publicacionesForm': 'publicacionesForm',
             'publicacionesForm:oficina': office.code,
             'publicacionesForm:tipoTramite': '3'
-        }
+        };
     }},
     {id: 'paso3', method: 'post', url: URLS[0], validate: isErrorMsg, data: ({user}) => {
         const office = getOffices(user.officeName);
@@ -64,6 +58,20 @@ module.exports = [
             'publicacionesForm:j_id70': 'Continuar',
             'honeypotName': ''
         };
+    }},
+    {id: 'paso3a', method: 'post',validate: isErrorMsg, url: URLS[0], data: async ({user}) => {
+        const office = getOffices(user.officeName);
+        const token = await getCaptchaCode();
+
+        return {
+            'publicacionesForm': 'publicacionesForm',
+            'publicacionesForm:oficina': office.code,
+            'publicacionesForm:tipoTramite': '3',
+            'publicacionesForm:pais': '21',
+            'g-recaptcha-response': token,
+            'publicacionesForm:j_id69': 'Continuar'
+        };
+
     }},
     {id: 'paso4', method: 'post', url: URLS[1], data: {
         'publicacionesForm': 'publicacionesForm',
@@ -91,12 +99,12 @@ module.exports = [
                 'publicacionesForm:j_id436:11:venezuela75': user.licenceNumber,
                 'publicacionesForm:j_id457:7:YVobservaciones': '',
                 'publicacionesForm:j_id2121': 'Solicitar',
-                'publicacionesForm:autorizacion': 'on',
+                'publicacionesForm:autorizacion': 'on'
             };
         },
         validate: checkAppointmentExist
     },
-    {id: 'paso6', method: 'post', url: URLS[3], validate: isErrorMsg, data: ({html}) => {
+    {id: 'paso6', method: 'post', url: URLS[3], validate: isErrorMsg, data: ({html, user}) => {
         const timeOption = html.find('.buscIntCamposEvProvSelect optgroup option')[0];
         const timeAttr = get(timeOption, 'parentNode.parentNode.attribs.name');
         const time = get(timeOption , 'attribs.value');

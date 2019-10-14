@@ -21,6 +21,7 @@
     "lodash": "^4.17.15",
     "mailgun-js": "^0.22.0",
     "module-alias": "^2.2.0",
+    "puppeteer": "^1.20.0",
     "slack-notify": "^0.1.7"
   },
   "_moduleAliases": {

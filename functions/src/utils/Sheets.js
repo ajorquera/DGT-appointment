@@ -1,5 +1,7 @@
-const KEY_FILE_PATH = '../../../credentials';
+const path = require('path');
 const {google} = require('googleapis');
+
+const KEY_FILE_PATH = path.resolve(__dirname, '../../../../credentials');
 const SPREADSHEET_ID = process.env.SPREADSHEET_ID;
 
 class Sheets {
