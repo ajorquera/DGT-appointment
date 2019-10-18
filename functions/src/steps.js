@@ -9,7 +9,7 @@ const checkAppointmentExist = ({html, user}) => {
     const message     = msgErrorDOM.text();
 
     if(message && message.search('usted tiene una cita pendiente de CANJES') !== -1) {
-        throw {code: 'APPOINTMENT_EXIST'};
+        throw {code: 'APPOINTMENT_EXIST', data: user};
     }
 
     return isErrorMsg({user, html});
@@ -59,7 +59,7 @@ module.exports = [
             'honeypotName': ''
         };
     }},
-    {id: 'paso3a', method: 'post',validate: isErrorMsg, url: URLS[0], data: async ({user}) => {
+    {id: 'paso3a', method: 'post', validate: isErrorMsg, url: URLS[0], data: async ({user}) => {
         const office = getOffices(user.officeName);
         const token = await getCaptchaCode();
 

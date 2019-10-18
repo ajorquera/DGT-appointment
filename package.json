@@ -1,6 +1,6 @@
 {
   "name": "cron-life",
-  "version": "1.4.0",
+  "version": "1.6.0",
   "description": "Different cron jobs for life",
   "scripts": {
     "test": "cd functions && npm test",
