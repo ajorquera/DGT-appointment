@@ -1,8 +1,6 @@
-# CRON LIFE
+# DGT-appointment
 
 [![Build Status](https://travis-ci.org/ajorquera/cronLife.svg?branch=master)](https://travis-ci.org/ajorquera/cronLife)
-
-This repo will contain serverless functions for different purposes
 
 ## Driver's licence appointment
 
