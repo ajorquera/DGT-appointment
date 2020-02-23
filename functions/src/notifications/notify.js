@@ -6,7 +6,7 @@ const NOTIFY           = process.env.NOTIFY || 'email';
 const fs               = require('fs');
 const path             = require('path');
 
-module.exports = async ({data, templateName, type=NOTIFY, emails=[EMAIL_TO]}) => {
+module.exports = async ({data, templateName, type=NOTIFY}) => {
 
     if(type === 'slack') {
         const message = slackMessages[templateName](data);
@@ -17,7 +17,7 @@ module.exports = async ({data, templateName, type=NOTIFY, emails=[EMAIL_TO]}) =>
         const template = await readFile(path.resolve(__dirname, `../templates/${templateName}.hbs`));
         const html = Handlebars.compile(template)(data);
 
-        await sendEmail({html, emails});
+        await sendEmail({html, emails: [EMAIL_TO]});
     }
 };
 

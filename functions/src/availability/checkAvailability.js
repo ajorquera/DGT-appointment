@@ -37,7 +37,7 @@ module.exports = async (office) => {
 
 const processHtml = (html) => {
     const datesAvailable = html.find('.dias').map((i, elm) => {
-        return get(elm , 'firstChild.firstChild.children[0].data');
+        return get(elm , 'firstChild.firstChild.children[0].firstChild.data');
     });
 
     return Array.from(datesAvailable);

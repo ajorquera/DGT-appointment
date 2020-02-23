@@ -19,9 +19,11 @@ const isErrorMsg = ({html, user}) => {
     const msgErrorDOM = html.find('.msgError');
     const message = msgErrorDOM.text();
 
-    if(message.search('El horario de atención al cliente está completo para los próximos días') !== -1) {
+    if(get(message, 'htmlsearch') && message.htmlsearch('El horario de atención al cliente está completo para los próximos días') !== -1) {
         const office = getOffices(user.officeName);
         throw {code: 'APPOINTMENT_NOT_AVAILABLE', data: office};
+    } else if (message) {
+        throw {code: 'STEP_FAILED', data: message};
     }
 
     return !html.find('.msgError').length;
@@ -69,13 +71,13 @@ module.exports = [
             'publicacionesForm:tipoTramite': '3',
             'publicacionesForm:pais': '21',
             'g-recaptcha-response': token,
-            'publicacionesForm:j_id69': 'Continuar'
+            'publicacionesForm:j_id60': 'Continuar'
         };
 
     }},
     {id: 'paso4', method: 'post', url: URLS[1], data: {
         'publicacionesForm': 'publicacionesForm',
-        'publicacionesForm:area:0:j_id112': 'Continuar'
+        'publicacionesForm:area:0:j_id97': 'Continuar'
     }},
     {
         id: 'paso5',
@@ -86,19 +88,20 @@ module.exports = [
             
             return {
                 'publicacionesForm': 'publicacionesForm',
-                'publicacionesForm:j_id383:0:YVminif': user.id,
-                'publicacionesForm:j_id387:4:nombreYV': user.name,
-                'publicacionesForm:j_id392:2:primerApellidoYV': user.lastName,
-                'publicacionesForm:j_id396:3:segundoApellidoYV': user.secodLastName,
-                'publicacionesForm:j_id401:1:residenciaYV': stateCode,
-                'publicacionesForm:j_id408:5:YVelsalvador6': user.phoneNumber,
-                'publicacionesForm:j_id413:6:YVelsalvador7': user.birthDate,
-                'publicacionesForm:j_id420:8:venezuela9': user.licenceExpDate,
-                'publicacionesForm:j_id427:9:venezuela21': 'VENEZUELA',
-                'publicacionesForm:j_id431:10:venezuela64': user.licenceNumber,
-                'publicacionesForm:j_id436:11:venezuela75': user.licenceNumber,
-                'publicacionesForm:j_id457:7:YVobservaciones': '',
-                'publicacionesForm:j_id2121': 'Solicitar',
+                'publicacionesForm:j_id314:0:YVminif': user.id,
+                'publicacionesForm:j_id318:4:nombreYV': user.name,
+                'publicacionesForm:j_id323:2:primerApellidoYV': user.lastName,
+                'publicacionesForm:j_id327:3:segundoApellidoYV': user.secondLastName,
+                'publicacionesForm:j_id332:1:residenciaYV': stateCode,
+                'publicacionesForm:j_id229:5:YVelsalvador6': user.phoneNumber,
+                'publicacionesForm:j_id343:6:YVelsalvador7': user.birthDate,
+                'publicacionesForm:j_id350:8:venezuela9': user.licenceExpDate,
+                'publicacionesForm:j_id357:9:venezuela21': 'VENEZUELA',
+                'publicacionesForm:j_id361:10:venezuela64': user.licenceNumber,
+                'publicacionesForm:j_id366:11:venezuela75': user.licenceNumber,
+                'publicacionesForm:j_id383:7:YVobservaciones': '',
+                'publicacionesForm:YVmiemailsavi': user.email,
+                'publicacionesForm:j_id2017': 'Solicitar',
                 'publicacionesForm:autorizacion': 'on'
             };
         },
@@ -108,7 +111,7 @@ module.exports = [
         const timeOption = html.find('.buscIntCamposEvProvSelect optgroup option')[0];
         const timeAttr = get(timeOption, 'parentNode.parentNode.attribs.name');
         const time = get(timeOption , 'attribs.value');
-        const buttonAttr = timeAttr.replace('horario', 'j_id56');
+        const buttonAttr = timeAttr.replace('horario', 'j_id59');
 
         return {
             'publicacionesForm': 'publicacionesForm',
@@ -118,21 +121,19 @@ module.exports = [
 
     }},
     {id: 'final', method: 'post', url: URLS[4], data: ({html}) =>  {
-        const code = html.find('input[name="j_id31:j_id275"]').attr('value');
+        const code = html.find('input[name="publicacionesCitaResumenForm:j_id283"]').attr('value');
 
         return {
-            'publicacionesForm': 'publicacionesForm',
-            'j_id31': 'j_id31',
-            'j_id31:j_id272': 'Confirmar',
-            'j_id31:j_id275': code,
-            '\'j_id31:honeypot': ''
+            'publicacionesCitaResumenForm': 'publicacionesCitaResumenForm',
+            'publicacionesCitaResumenForm:j_id280': 'Confirmar',
+            'publicacionesCitaResumenForm:j_id283': code
         };
 
     }, validate: ({html}) => {
         let isValid = isErrorMsg({html});
 
         if(isValid) {
-            const messageDOM = html.find('#j_id24');
+            const messageDOM = html.find('#j_id27');
             const message = get(messageDOM, '[0].firstChild.data');
             isValid = message === 'Estos son los datos de la cita solicitada';
         } 
