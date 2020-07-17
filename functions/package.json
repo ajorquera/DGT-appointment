@@ -18,7 +18,7 @@
     "googleapis": "^42.0.0",
     "handlebars": "^4.3.0",
     "http-status-codes": "ajorquera/http-status-codes",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "mailgun-js": "^0.22.0",
     "module-alias": "^2.2.0",
     "puppeteer": "^1.20.0",
